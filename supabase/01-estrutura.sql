@@ -46,3 +46,8 @@ create table if not exists public.eventos_kiwify (
 );
 alter table public.eventos_kiwify enable row level security;
 -- sem políticas: só o próprio Supabase (função do webhook) lê e grava aqui
+
+-- Permissões da função do webhook (service_role)
+grant select, insert, update on public.assinaturas to service_role;
+grant select, insert on public.eventos_kiwify to service_role;
+grant usage, select on sequence public.eventos_kiwify_id_seq to service_role;
