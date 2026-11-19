@@ -10,11 +10,39 @@ Aplicativo web independente para psicólogos(as) aplicarem rastreios, enviarem p
 
 Não há servidor nesta versão: os dados ficam no link e no aparelho de quem abre.
 
-## Rastreios incluídos
-- PHQ-9 (sintomas depressivos) — uso livre
-- GAD-7 (ansiedade) — uso livre
-- ASRS-18 Parte A (TDAH adulto, OMS) — uso livre
-- Sinais de Burnout — questionário autoral, não validado
+## Biblioteca (75 rastreios em 9 categorias)
+Ansiedade · Humor · Saúde materna e puerpério · Trauma · Estresse e burnout · Personalidade · Neurodesenvolvimento · Relacionamentos · Outros transtornos.
+
+### Instrumentos validados (15)
+| Escala | Tema | Situação de uso |
+|---|---|---|
+| PHQ-9, GAD-7, PHQ-15, PHQ módulo de pânico | Depressão, ansiedade, somatização, pânico | Pfizer: sem necessidade de permissão |
+| DASS-21 | Depressão, ansiedade e estresse | Domínio público |
+| ASQ (NIMH) | Risco de suicídio | Domínio público (governo dos EUA) |
+| PCL-5, PC-PTSD-5 | TEPT e trauma | Domínio público (National Center for PTSD) |
+| ITQ | TEPT complexo | Disponibilizado gratuitamente pelos autores |
+| ACE | Experiências adversas na infância | Uso livre (CDC-Kaiser) |
+| AUDIT | Álcool | OMS, uso livre |
+| SNAP-IV | TDAH infantil | Domínio público |
+| SCOFF | Transtornos alimentares | Publicado no BMJ; confirmar uso comercial |
+| ASRS-18 Parte A | TDAH adulto | OMS; **confirmar licença para uso comercial** |
+| EPDS | Depressão pós-parto | © Royal College of Psychiatrists; **confirmar licença para uso comercial** |
+
+Traduções marcadas como "tradução de trabalho" devem ser comparadas com as versões brasileiras validadas antes do uso formal.
+
+### Questionários psicoeducativos autorais (60)
+Escritos para este app a partir de critérios descritivos do DSM-5-TR e da CID-11. **Não são validados**: servem para psicoeducação e para orientar a entrevista clínica. Precisam de revisão clínica antes da venda.
+
+### Cuidados de segurança embutidos
+- Itens de risco (PHQ-9 item 9, EPDS item 10, ASQ, desesperança, puerpério, borderline) geram alerta no relatório e mostram ao paciente o CVV 188 e o SAMU 192.
+- Rastreios de violência mostram Ligue 180, Disque 100 e 190.
+- Rastreios sensíveis (personalidade, violência, suicídio, bipolar, vínculo) não exibem devolutiva automática ao paciente.
+
+## Estrutura
+- `index.html` — página e estilos
+- `js/app.js` — telas, pontuação e links
+- `js/escalas-validadas.js` — instrumentos validados
+- `js/escalas-psicoeducativas.js` — questionários autorais
 
 ## Rodar
 Abra `index.html` no navegador, ou publique a pasta em qualquer hospedagem estática (GitHub Pages, Netlify, Vercel).
