@@ -95,7 +95,12 @@ const EXAMPLES = [
   {id:'ex1', s:'gad7', p:'Paciente exemplo A', a:[2,2,3,2,1,2,1], t:Date.now()-86400000*2, ex:true},
   {id:'ex2', s:'burnout', p:'Paciente exemplo B', a:[3,3,2,3,2,3,2,2,3,2,1,2], t:Date.now()-86400000*6, ex:true}
 ];
-let pro = store.get('pro', null) || DEMO_PRO;
+const CFG = window.PSIQUE_CONFIG || {};
+const LIVE = !!(window.supabase && CFG.supabaseUrl && CFG.supabaseKey && location.protocol !== 'file:' && !/claude/.test(location.hostname));
+const sb = LIVE ? window.supabase.createClient(CFG.supabaseUrl, CFG.supabaseKey) : null;
+let user = null, sub = null;
+const ativa = a => !!a && a.status !== 'reembolsada' && (!a.expira_em || new Date(a.expira_em) > new Date());
+let pro = LIVE ? {name:'', crp:'', wa:''} : (store.get('pro', null) || DEMO_PRO);
 let results = (store.get('results', null) || EXAMPLES).filter(r => SCALES[r.s]);
 let S = {view:'home'};
 let lib = {cat:'all', q:''};
@@ -142,16 +147,17 @@ function viewHome(){
   const nVal = ORDER.filter(id => SCALES[id].kind === 'validado').length;
   const recent = results.slice().sort((a,b) => b.t-a.t).slice(0,3);
   return `${topbar('home')}
-  ${pro.demo ? `<div class="banner no-print"><span>Você está no modo de demonstração.</span><button class="btn primary" data-go="profile">Configurar meu perfil</button></div>` : ''}
+  ${pro.demo ? `<div class="banner no-print"><span>Você está no modo de demonstração.</span><button class="btn primary" data-go="profile">Configurar meu perfil</button></div>`
+    : !pro.name ? `<div class="banner no-print"><span>Complete seu perfil para personalizar convites e relatórios.</span><button class="btn primary" data-go="profile">Completar perfil</button></div>` : ''}
   <section class="access">
     <div style="display:flex;justify-content:center;margin-bottom:6px">${BIGLOGO}</div>
     <h1>Ferramentas de Psicoeducação</h1>
     <p class="tag">rastreios que acolhem e orientam</p>
     <div class="rule"></div>
     <div class="who">
-      <p><span class="muted">Profissional:</span> <strong>${esc(pro.name)}</strong></p>
+      <p><span class="muted">Profissional:</span> <strong>${esc(pro.name || (user && user.email) || '')}</strong></p>
       <p class="muted small">${esc(pro.crp)}</p>
-      <p style="margin-top:8px"><span class="pill gold">Acesso Vitalício</span></p>
+      <p style="margin-top:8px">${planPill()}</p>
     </div>
   </section>
   <section class="stack">
@@ -231,14 +237,15 @@ function viewProfile(){
       <label class="f" for="f-name">Nome profissional<input class="input" id="f-name" required value="${esc(pro.demo?'':pro.name)}" placeholder="Ex.: Psicóloga Ana Lima"></label>
       <label class="f" for="f-crp">Registro<input class="input" id="f-crp" value="${esc(pro.demo?'':pro.crp)}" placeholder="CRP 00/00000"></label>
       <label class="f" for="f-wa">WhatsApp para receber as respostas<input class="input" id="f-wa" inputmode="tel" value="${esc(pro.wa)}" placeholder="(11) 90000-0000"></label>
-      <label class="f" for="f-email">E-mail<input class="input" id="f-email" type="email" value="${esc(pro.email)}" placeholder="voce@email.com"></label>
+      ${LIVE ? '' : `<label class="f" for="f-email">E-mail<input class="input" id="f-email" type="email" value="${esc(pro.email)}" placeholder="voce@email.com"></label>`}
       <button class="btn primary" type="submit">Salvar perfil</button>
     </form>
   </section>
   <section class="card stack">
     <h3>Plano</h3>
-    <p><span class="pill gold">Acesso Vitalício</span> <span class="muted small">Inclui todas as atualizações da biblioteca.</span></p>
-    <button class="btn ghost" id="logout">Sair e apagar dados deste aparelho</button>
+    <p>${planPill()} <span class="muted small">Inclui todas as atualizações da biblioteca.</span></p>
+    ${user ? `<p class="small muted">Conta: ${esc(user.email)}</p>` : ''}
+    <button class="btn ghost" id="logout">${LIVE ? 'Sair da conta' : 'Sair e apagar dados deste aparelho'}</button>
   </section>`;
 }
 
@@ -360,9 +367,93 @@ function viewPatientDone(){
   ${patient.sim ? `<button class="btn ghost block no-print" id="seeAsPro">Demonstração: abrir o relatório como profissional</button>` : ''}`;
 }
 
+/* ---------- Conta e assinatura ---------- */
+function planPill(){
+  if (!LIVE) return '<span class="pill gold">Demonstração</span>';
+  if (!sub) return '<span class="pill line">Sem assinatura</span>';
+  if (sub.origem === 'cortesia' && !sub.expira_em) return '<span class="pill gold">Acesso cortesia</span>';
+  const d = sub.expira_em ? new Date(sub.expira_em).toLocaleDateString('pt-BR') : '';
+  if (sub.status === 'cancelada') return `<span class="pill line">Cancelada · acesso até ${d}</span>`;
+  if (sub.status === 'atrasada') return `<span class="pill gold">Pagamento pendente</span>`;
+  return `<span class="pill gold">Assinatura ativa${d ? ' · renova em ' + d : ''}</span>`;
+}
+function shell(inner){
+  return `<section class="access">
+    <div style="display:flex;justify-content:center;margin-bottom:6px">${BIGLOGO}</div>
+    <h1>Psique Rastreios</h1>
+    <p class="tag">ferramentas de psicoeducação</p>
+    <div class="rule"></div>
+    <div class="stack" style="text-align:left;position:relative">${inner}</div>
+  </section>`;
+}
+function viewLogin(){
+  const signup = S.mode === 'signup', forgot = S.mode === 'forgot';
+  const tabs = `<div class="nav" style="align-self:center"><button data-mode="login" aria-current="${!signup && !forgot}">Entrar</button><button data-mode="signup" aria-current="${signup}">Criar conta</button></div>`;
+  if (forgot) return shell(`<h3>Recuperar senha</h3>
+    <form id="lf" class="stack"><label class="f" for="l-email">E-mail<input class="input" id="l-email" type="email" required autocomplete="email" value="${esc(S.email||'')}"></label>
+    <button class="btn primary" type="submit">Enviar link de recuperação</button></form>
+    <p id="lmsg" class="small muted">${esc(S.msg||'')}</p>
+    <button class="back" data-mode="login">${icon('back',16)} Voltar para o login</button>`);
+  return shell(`${tabs}
+    <form id="lf" class="stack">
+      <label class="f" for="l-email">E-mail<input class="input" id="l-email" type="email" required autocomplete="email" value="${esc(S.email||'')}"></label>
+      <label class="f" for="l-pass">Senha<input class="input" id="l-pass" type="password" required minlength="6" autocomplete="${signup ? 'new-password' : 'current-password'}"></label>
+      <button class="btn primary" type="submit">${signup ? 'Criar minha conta' : 'Entrar'}</button>
+    </form>
+    <p id="lmsg" class="small" style="color:var(--t3)">${esc(S.msg||'')}</p>
+    <p class="small muted">${signup ? 'Use o mesmo e-mail da sua compra na Kiwify. A senha precisa ter pelo menos 6 caracteres.' : 'Use o e-mail da sua compra na Kiwify.'}</p>
+    ${signup ? '' : '<button class="back" data-mode="forgot">Esqueci minha senha</button>'}`) +
+    `<p class="foot">Assinatura ${esc(CFG.preco || '')}${CFG.checkoutUrl ? ` · <a href="${esc(CFG.checkoutUrl)}" target="_blank" rel="noopener">Assinar agora</a>` : ''}</p>`;
+}
+function viewNoAccess(){
+  const why = !sub ? `Não encontramos uma assinatura para <strong>${esc(user.email)}</strong>.`
+    : sub.status === 'reembolsada' ? 'A compra deste e-mail foi reembolsada ou contestada.'
+    : sub.status === 'cancelada' ? 'Sua assinatura foi cancelada e o período pago terminou.'
+    : 'Sua assinatura está com o pagamento pendente.';
+  return shell(`<h3>Acesso não liberado</h3>
+    <p>${why}</p>
+    <p class="small muted">Se você acabou de assinar, aguarde alguns minutos e toque em "Verificar de novo". Confira se entrou com o mesmo e-mail usado na Kiwify.</p>
+    ${CFG.checkoutUrl ? `<a class="btn primary block" href="${esc(CFG.checkoutUrl)}" target="_blank" rel="noopener">Assinar por ${esc(CFG.preco || '')}</a>` : ''}
+    <button class="btn soft block" id="recheck">Verificar de novo</button>
+    <button class="btn ghost block" id="logout">Sair e entrar com outro e-mail</button>`);
+}
+function viewNewPass(){
+  return shell(`<h3>Criar nova senha</h3>
+    <form id="npf" class="stack"><label class="f" for="np">Nova senha<input class="input" id="np" type="password" required minlength="6" autocomplete="new-password"></label>
+    <button class="btn primary" type="submit">Salvar nova senha</button></form>
+    <p id="lmsg" class="small" style="color:var(--t3)"></p>`);
+}
+const ERR = m => /Invalid login/i.test(m) ? 'E-mail ou senha incorretos.'
+  : /already registered|already exists/i.test(m) ? 'Este e-mail já tem conta. Use "Entrar".'
+  : /at least 6|Password should/i.test(m) ? 'A senha precisa ter pelo menos 6 caracteres.'
+  : /not confirmed/i.test(m) ? 'Confirme seu e-mail pelo link que enviamos antes de entrar.'
+  : /rate limit|too many/i.test(m) ? 'Muitas tentativas seguidas. Aguarde alguns minutos.'
+  : /fetch|network/i.test(m) ? 'Sem conexão com o servidor. Verifique sua internet.'
+  : 'Não foi possível concluir: ' + m;
+
+async function loadAccount(){
+  const [{data:a}, {data:p}] = await Promise.all([
+    sb.from('assinaturas').select('*').maybeSingle(),
+    sb.from('perfis').select('*').eq('id', user.id).maybeSingle()
+  ]);
+  sub = a || null;
+  pro = p ? {name:p.nome || '', crp:p.crp || '', wa:p.whatsapp || ''} : {name:'', crp:'', wa:''};
+}
+const PRO_VIEWS = ['home','results','tool','profile','report'];
+function gate(){
+  if (!LIVE || !PRO_VIEWS.includes(S.view)) return null;
+  if (!user) return 'login';
+  if (!ativa(sub)) return 'noAccess';
+  return null;
+}
+
 /* ---------- Render ---------- */
-const VIEWS = {home:viewHome, results:viewResults, tool:viewTool, profile:viewProfile, report:viewReport, pIntro:viewPatientIntro, pQ:viewQuestion, pDone:viewPatientDone};
-function render(){ $('#app').innerHTML = (VIEWS[S.view] || viewHome)(); bind(); }
+const VIEWS = {login:viewLogin, noAccess:viewNoAccess, newPass:viewNewPass, home:viewHome, results:viewResults, tool:viewTool, profile:viewProfile, report:viewReport, pIntro:viewPatientIntro, pQ:viewQuestion, pDone:viewPatientDone};
+function render(){
+  const g = gate();
+  if (g) S = {view:g, mode:S.mode, email:S.email, msg:S.msg};
+  $('#app').innerHTML = (VIEWS[S.view] || viewHome)(); bind();
+}
 function startPatient(ctx){ patient = {...ctx, a:Array(SCALES[ctx.s].items.length).fill(null), t:Date.now()}; go('pIntro'); }
 
 function bindCards(root){
@@ -418,18 +509,80 @@ function bind(){
   const pf = $('#pf');
   if (pf) pf.onsubmit = e => {
     e.preventDefault();
-    pro = {name:$('#f-name').value.trim(), crp:$('#f-crp').value.trim(), wa:$('#f-wa').value.trim(), email:$('#f-email').value.trim()};
-    store.set('pro', pro); toast('Perfil salvo'); go('home');
+    pro = {name:$('#f-name').value.trim(), crp:$('#f-crp').value.trim(), wa:$('#f-wa').value.trim(), email:($('#f-email') ? $('#f-email').value.trim() : '')};
+    if (LIVE) {
+      sb.from('perfis').upsert({id:user.id, nome:pro.name, crp:pro.crp, whatsapp:pro.wa, atualizado_em:new Date().toISOString()})
+        .then(({error}) => { if (error) toast('Não foi possível salvar o perfil'); else { toast('Perfil salvo'); go('home'); } });
+    } else { store.set('pro', pro); toast('Perfil salvo'); go('home'); }
   };
   const lo = $('#logout');
-  if (lo) lo.onclick = () => { store.del('pro'); store.del('results'); pro = DEMO_PRO; results = EXAMPLES.slice(); toast('Dados apagados'); go('home'); };
+  if (lo) lo.onclick = async () => {
+    if (LIVE) { await sb.auth.signOut(); user = null; sub = null; go('login'); return; }
+    store.del('pro'); store.del('results'); pro = DEMO_PRO; results = EXAMPLES.slice(); toast('Dados apagados'); go('home');
+  };
+
+  document.querySelectorAll('[data-mode]').forEach(b => b.onclick = () => go('login', {mode:b.dataset.mode, email:($('#l-email')||{}).value}));
+  const lf = $('#lf');
+  if (lf) lf.onsubmit = async e => {
+    e.preventDefault();
+    const email = $('#l-email').value.trim(), pass = $('#l-pass') ? $('#l-pass').value : '';
+    const btn = lf.querySelector('button'); btn.disabled = true; btn.textContent = 'Aguarde...';
+    const msg = t => { const m = $('#lmsg'); if (m) m.textContent = t; btn.disabled = false; btn.textContent = S.mode === 'signup' ? 'Criar minha conta' : S.mode === 'forgot' ? 'Enviar link de recuperação' : 'Entrar'; };
+    try {
+      if (S.mode === 'forgot') {
+        const {error} = await sb.auth.resetPasswordForEmail(email, {redirectTo:baseUrl()});
+        if (error) return msg(ERR(error.message));
+        return msg('Se houver uma conta com este e-mail, você vai receber um link para criar uma nova senha.');
+      }
+      const {data, error} = S.mode === 'signup' ? await sb.auth.signUp({email, password:pass}) : await sb.auth.signInWithPassword({email, password:pass});
+      if (error) return msg(ERR(error.message));
+      if (!data.session) return msg('Conta criada. Confirme seu e-mail pelo link que enviamos e depois entre.');
+      user = data.session.user; await loadAccount(); afterLogin();
+    } catch(err){ msg(ERR(String(err && err.message || err))); }
+  };
+  const rc = $('#recheck'); if (rc) rc.onclick = async () => { rc.disabled = true; await loadAccount(); if (ativa(sub)) afterLogin(); else { toast('Ainda não encontramos a assinatura'); rc.disabled = false; } };
+  const npf = $('#npf');
+  if (npf) npf.onsubmit = async e => {
+    e.preventDefault();
+    const {error} = await sb.auth.updateUser({password:$('#np').value});
+    if (error) { $('#lmsg').textContent = ERR(error.message); return; }
+    toast('Senha alterada'); afterLogin();
+  };
 }
 
 /* ---------- Entrada por link ---------- */
-(function boot(){
+function afterLogin(){
+  let r = null; try { r = sessionStorage.getItem('psique:pendingR'); sessionStorage.removeItem('psique:pendingR'); } catch(e){}
+  if (r && openResult(r)) return;
+  go('home');
+}
+function openResult(r){
+  const res = dec(r);
+  if (!(res && SCALES[res.s] && Array.isArray(res.a))) return false;
+  const key = res.s + res.t + res.p;
+  let saved = results.find(x => x.key === key);
+  if (!saved) { saved = {...res, id:'r'+Date.now(), key}; results.push(saved); saveResults(); }
+  go('report', {r:saved}); return true;
+}
+(async function boot(){
   let q; try { q = new URLSearchParams(location.search); } catch(e){ q = new URLSearchParams(''); }
   const a = q.get('a'), r = q.get('r');
   if (a) { const ctx = dec(a); if (ctx && SCALES[ctx.s]) { startPatient(ctx); return; } }
+  if (LIVE) {
+    if (r) { try { sessionStorage.setItem('psique:pendingR', r); history.replaceState(null, '', location.pathname); } catch(e){} }
+    $('#app').innerHTML = '<p class="foot" style="padding-top:40vh">Carregando...</p>';
+    sb.auth.onAuthStateChange((ev, session) => {
+      if (ev === 'PASSWORD_RECOVERY') { user = session && session.user; S = {view:'newPass'}; $('#app').innerHTML = viewNewPass(); bind(); }
+      if (ev === 'SIGNED_OUT') { user = null; sub = null; }
+    });
+    try {
+      const {data} = await sb.auth.getSession();
+      user = data.session ? data.session.user : null;
+      if (S.view === 'newPass') return;
+      if (user) { await loadAccount(); if (ativa(sub)) return afterLogin(); }
+    } catch(e){}
+    go(user ? 'noAccess' : 'login'); return;
+  }
   if (r) {
     const res = dec(r);
     if (res && SCALES[res.s] && Array.isArray(res.a)) {

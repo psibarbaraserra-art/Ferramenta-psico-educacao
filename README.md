@@ -38,9 +38,20 @@ Escritos para este app a partir de critérios descritivos do DSM-5-TR e da CID-1
 - Rastreios de violência mostram Ligue 180, Disque 100 e 190.
 - Rastreios sensíveis (personalidade, violência, suicídio, bipolar, vínculo) não exibem devolutiva automática ao paciente.
 
+## Login e assinatura (Supabase + Kiwify)
+1. **Banco:** cole `supabase/01-estrutura.sql` em SQL Editor → Run.
+2. **E-mail:** em Authentication → Sign In / Providers → Email, desligue "Confirm email" enquanto não houver um provedor de e-mail próprio (SMTP).
+3. **Acesso cortesia:** `insert into public.assinaturas (email, status, origem) values ('email@exemplo.com', 'ativa', 'cortesia');`
+4. **Kiwify:** publique `supabase/functions/kiwify-webhook` como Edge Function (com "Verify JWT" desligado), crie o segredo `KIWIFY_CHAVE` e cadastre na Kiwify o webhook `https://<projeto>.supabase.co/functions/v1/kiwify-webhook?chave=<KIWIFY_CHAVE>`.
+
+O link do paciente continua funcionando sem login.
+
 ## Estrutura
 - `index.html` — página e estilos
-- `js/app.js` — telas, pontuação e links
+- `js/app.js` — telas, pontuação, links e login
+- `js/config.js` — endereço e chave pública do Supabase
+- `js/vendor/` — biblioteca supabase-js 2.45.4 (licença MIT)
+- `supabase/` — estrutura do banco e função do webhook da Kiwify
 - `js/escalas-validadas.js` — instrumentos validados
 - `js/escalas-psicoeducativas.js` — questionários autorais
 
