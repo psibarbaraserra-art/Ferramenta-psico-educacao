@@ -44,8 +44,13 @@ Escritos para este app a partir de critérios descritivos do DSM-5-TR e da CID-1
 - `js/escalas-validadas.js` — instrumentos validados
 - `js/escalas-psicoeducativas.js` — questionários autorais
 
-## Rodar
-Abra `index.html` no navegador, ou publique a pasta em qualquer hospedagem estática (GitHub Pages, Netlify, Vercel).
+## Publicar (GitHub Pages)
+1. No GitHub, abra o repositório e vá em **Settings → Pages**.
+2. Em **Source**, escolha **Deploy from a branch**.
+3. Em **Branch**, escolha `ccr-5d0f7dd5-4vayoj` e a pasta `/ (root)`, e clique em **Save**.
+4. Em 1 ou 2 minutos o app fica no ar em `https://psibarbaraserra-art.github.io/Ferramenta-psico-educacao/`.
+
+No celular, abra o endereço e use "Adicionar à tela inicial" para instalar como aplicativo.
 
 ## Próximas etapas
 - Login real e liberação automática de acesso pela plataforma de vendas (Hotmart/Kiwify)
