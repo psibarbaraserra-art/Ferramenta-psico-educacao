@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <!-- ARTIFACT-START -->
-<title>Oliva Rastreios</title>
+<title>Psique Rastreios</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -59,13 +59,13 @@ button,input,textarea{font:inherit;color:inherit}
 
 /* topo */
 .topbar{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
-@media (max-width:430px){.brand-sub{display:none}.nav button{padding:6px 9px;font-size:.78rem}.brand svg{width:32px;height:32px}}
 .brand{display:flex;align-items:center;gap:10px;background:none;border:0;padding:0;cursor:pointer}
 .brand-name{font-family:var(--display);font-size:1.5rem;font-weight:600;color:var(--olive-deep);letter-spacing:.02em}
 .brand-sub{font-size:.7rem;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);display:block;margin-top:-4px}
 .nav{display:flex;gap:4px;background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:4px}
 .nav button{border:0;background:none;padding:6px 12px;border-radius:999px;cursor:pointer;font-size:.82rem;color:var(--muted);font-weight:600}
 .nav button[aria-current="true"]{background:var(--olive-soft);color:var(--olive-deep)}
+@media (max-width:430px){.brand-sub{display:none}.nav button{padding:6px 9px;font-size:.78rem}.brand svg{width:32px;height:32px}}
 
 /* cartão de acesso (inspirado no vídeo) */
 .access{background:var(--surface);border:1px solid var(--line);border-radius:24px;box-shadow:var(--shadow);padding:28px 22px 22px;text-align:center;position:relative;overflow:hidden}
@@ -193,8 +193,8 @@ details summary{cursor:pointer;font-weight:600;color:var(--olive-deep)}
 const $ = s => document.querySelector(s);
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const store = {
-  get(k, d){ try { const v = localStorage.getItem('oliva:'+k); return v ? JSON.parse(v) : d; } catch(e){ return d; } },
-  set(k, v){ try { localStorage.setItem('oliva:'+k, JSON.stringify(v)); } catch(e){} }
+  get(k, d){ try { const v = localStorage.getItem('psique:'+k); return v ? JSON.parse(v) : d; } catch(e){ return d; } },
+  set(k, v){ try { localStorage.setItem('psique:'+k, JSON.stringify(v)); } catch(e){} }
 };
 const enc = o => { const b = new TextEncoder().encode(JSON.stringify(o)); let s=''; b.forEach(x => s += String.fromCharCode(x)); return btoa(s).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,''); };
 const dec = t => { try { const s = atob(t.replace(/-/g,'+').replace(/_/g,'/')); const b = Uint8Array.from(s, c => c.charCodeAt(0)); return JSON.parse(new TextDecoder().decode(b)); } catch(e){ return null; } };
@@ -221,12 +221,12 @@ const ICONS = {
 };
 const icon = (n, size) => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" ${size?`width="${size}" height="${size}"`:''} aria-hidden="true">${ICONS[n]}</svg>`;
 const LOGO = `<svg width="38" height="38" viewBox="0 0 48 48" fill="none" aria-hidden="true">
-  <circle cx="24" cy="24" r="22.5" stroke="var(--line)"/>
-  <path d="M14 36c6-4 12-11 18-24" stroke="var(--olive)" stroke-width="1.6" stroke-linecap="round"/>
-  <ellipse cx="18" cy="27" rx="5" ry="2.4" transform="rotate(-30 18 27)" fill="var(--olive)"/>
-  <ellipse cx="27" cy="25" rx="5" ry="2.4" transform="rotate(-70 27 25)" fill="var(--olive)" opacity=".75"/>
-  <ellipse cx="23" cy="18" rx="4.4" ry="2.1" transform="rotate(-20 23 18)" fill="var(--olive)" opacity=".9"/>
-  <circle cx="33" cy="13" r="2.6" fill="var(--gold)"/>
+  <circle cx="24" cy="24" r="22.5" stroke="var(--olive)" stroke-opacity=".35"/>
+  <g stroke="var(--gold)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M24 11v26"/>
+    <path d="M14.5 15.5v4.5a9.5 9.5 0 0 0 19 0v-4.5"/>
+    <path d="M19 37h10"/>
+  </g>
 </svg>`;
 
 /* ===================== Instrumentos ===================== */
@@ -284,7 +284,7 @@ const SCALES = {
     ref:'Spitzer, Kroenke, Williams & Löwe (2006). Versão brasileira de Moreno et al. (2016). Instrumento de uso livre.'
   },
   burnout: {
-    title:'Rastreio de Sinais de Burnout', code:'Autoral Oliva', area:'Trabalho', icon:'flame', minutes:4, kind:'autoral', badge:'Atualização',
+    title:'Rastreio de Sinais de Burnout', code:'Autoral Psique', area:'Trabalho', icon:'flame', minutes:4, kind:'autoral', badge:'Atualização',
     about:'Doze afirmações sobre exaustão, distanciamento e sensação de eficácia no trabalho. É um questionário de psicoeducação criado para este app. Não é um instrumento validado e não substitui a avaliação clínica.',
     period:'Pensando no último mês, com que frequência isto acontece com você?',
     options:FREQ5B,
@@ -370,7 +370,7 @@ function saveResults(){ store.set('results', results); }
 function topbar(active){
   const tabs = [['home','Rastreios'],['results','Resultados'],['profile','Perfil']];
   return `<header class="topbar no-print">
-    <button class="brand" data-go="home" aria-label="Início">${LOGO}<span><span class="brand-name">Oliva</span><span class="brand-sub">Rastreios</span></span></button>
+    <button class="brand" data-go="home" aria-label="Início">${LOGO}<span><span class="brand-name">Psique</span><span class="brand-sub">Rastreios</span></span></button>
     <nav class="nav" aria-label="Seções">${tabs.map(([v,l]) => `<button data-go="${v}" aria-current="${active===v}">${l}</button>`).join('')}</nav>
   </header>`;
 }
@@ -412,7 +412,7 @@ function viewHome(){
     <div style="display:flex;justify-content:space-between;align-items:baseline;gap:12px"><h3>Resultados recentes</h3><button class="back" data-go="results">Ver todos</button></div>
     ${resultList(recent)}
   </section>
-  <p class="foot">Oliva · ferramenta de apoio ao trabalho clínico. Não realiza diagnóstico.</p>`;
+  <p class="foot">Psique Rastreios · ferramenta de apoio ao trabalho clínico. Não realiza diagnóstico.</p>`;
 }
 
 function resultList(list){
@@ -656,7 +656,7 @@ function bind(){
     store.set('pro', pro); toast('Perfil salvo'); go('home');
   };
   const lo = $('#logout');
-  if (lo) lo.onclick = () => { try { localStorage.removeItem('oliva:pro'); localStorage.removeItem('oliva:results'); } catch(e){} pro = DEMO_PRO; results = EXAMPLES; toast('Dados apagados'); go('home'); };
+  if (lo) lo.onclick = () => { try { localStorage.removeItem('psique:pro'); localStorage.removeItem('psique:results'); } catch(e){} pro = DEMO_PRO; results = EXAMPLES; toast('Dados apagados'); go('home'); };
 }
 
 /* ===================== Entrada por link ===================== */

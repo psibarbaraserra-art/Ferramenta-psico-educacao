@@ -1,4 +1,4 @@
-# Oliva · Rastreios em Psicoeducação
+# Psique Rastreios · Ferramentas de Psicoeducação
 
 Aplicativo web independente para psicólogos(as) aplicarem rastreios, enviarem por link ao paciente e receberem um relatório pronto, com faixa de resultado, psicoeducação e PDF.
 
