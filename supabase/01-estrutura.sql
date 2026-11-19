@@ -32,6 +32,10 @@ create policy "ler o proprio perfil" on public.perfis for select to authenticate
 create policy "criar o proprio perfil" on public.perfis for insert to authenticated with check (id = auth.uid());
 create policy "editar o proprio perfil" on public.perfis for update to authenticated using (id = auth.uid()) with check (id = auth.uid());
 
+-- Permissões para quem fez login (as regras acima continuam valendo)
+grant select on public.assinaturas to authenticated;
+grant select, insert, update on public.perfis to authenticated;
+
 -- Registro dos avisos recebidos da Kiwify (ajuda a conferir problemas)
 create table if not exists public.eventos_kiwify (
   id          bigserial primary key,
