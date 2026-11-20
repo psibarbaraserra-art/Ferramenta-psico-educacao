@@ -34,6 +34,7 @@ const ICONS = {
   cup:'<path d="M7 4h10l-1 8a4 4 0 0 1-8 0L7 4Z"/><path d="M12 16v4M9 20h6"/>',
   search:'<circle cx="11" cy="11" r="6"/><path d="M20 20l-4.5-4.5"/>',
   back:'<path d="M15 6l-6 6 6 6"/>',
+  trash:'<path d="M4 7h16"/><path d="M10 11v6M14 11v6"/><path d="M6 7l1 12a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2l1-12"/><path d="M9 7V4h6v3"/>',
   wa:'<path d="M4 20l1.3-4A8 8 0 1 1 8 18.7L4 20Z"/>'
 };
 const icon = (n, size) => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" ${size?`width="${size}" height="${size}"`:''} aria-hidden="true">${ICONS[n] || ICONS.leaf}</svg>`;
@@ -216,20 +217,25 @@ function viewHome(){
   <p class="foot">Psique Rastreios · ferramenta de apoio ao trabalho clínico. Não realiza diagnóstico.${CFG.versao ? '<br>Versão ' + esc(CFG.versao) : ''}</p>`;
 }
 
-function resultList(list){
+function resultList(list, comExcluir){
   if (!list.length) return `<div class="card center stack"><p class="muted">Os resultados aparecem aqui quando um paciente responder e você abrir o link recebido.</p></div>`;
   return `<div class="list">${list.map(r => { const s = SCALES[r.s]; if (!s) return ''; const c = compute(r.s, r.a); return `
+    <div class="rrow">
     <button class="row" data-result="${r.id}">
       <span class="dot" style="background:${toneVar(c.level.tone)}"></span>
       <span class="grow"><span class="t" style="display:block">${esc(r.p)}${r.ex ? ' <span class="pill line" style="margin-left:4px">Exemplo</span>' : ''}</span><span class="small muted">${esc(s.kind === 'validado' ? s.code : s.title.replace(/^Rastreio (de |do |da )?/,''))} · ${fmtDate(r.t)}</span></span>
       <span class="small" style="font-weight:600;color:${toneVar(c.level.tone)};text-align:right;max-width:40%">${c.level.label}</span>
-    </button>`; }).join('')}</div>`;
+    </button>${comExcluir ? `<button class="rdel" data-del="${r.id}" aria-label="Excluir o resultado de ${esc(r.p)}" title="Excluir">${icon('trash',18)}</button>` : ''}
+    </div>`; }).join('')}</div>`;
 }
 
 function viewResults(){
   return `${topbar('results')}
-  <div class="stack"><h2>Resultados recebidos</h2><p class="muted small">Ficam salvos apenas neste aparelho.</p></div>
-  ${resultList(results.slice().sort((a,b) => b.t-a.t))}`;
+  <div style="display:flex;justify-content:space-between;align-items:flex-end;gap:12px;flex-wrap:wrap">
+    <div class="stack"><h2>Resultados recebidos</h2><p class="muted small">Ficam salvos apenas neste aparelho.</p></div>
+    ${results.length ? `<button class="btn danger" id="delall">${icon('trash',16)} Excluir todos</button>` : ''}
+  </div>
+  ${resultList(results.slice().sort((a,b) => b.t-a.t), true)}`;
 }
 
 function viewTool(){
@@ -356,6 +362,7 @@ function viewReport(){
     <button class="btn primary" id="pdf">Baixar PDF</button>
     <a class="btn soft" href="https://wa.me/?text=${encodeURIComponent(shareMsg)}" target="_blank" rel="noopener">${icon('wa',18)} Enviar devolutiva</a>
   </div>
+  <div class="btn-row no-print"><button class="btn danger" id="delres">${icon('trash',16)} Excluir este resultado</button></div>
   <p class="small muted no-print">A devolutiva traz apenas a faixa e as orientações, sem a pontuação.</p>`;
 }
 
@@ -572,6 +579,22 @@ function bind(){
   document.querySelectorAll('[data-go]').forEach(b => b.onclick = () => go(b.dataset.go));
   bindCards(document);
   document.querySelectorAll('[data-result]').forEach(b => b.onclick = () => go('report', {r:results.find(r => r.id === b.dataset.result)}));
+  // excluir resultados (ficam só neste aparelho; não dá para desfazer)
+  document.querySelectorAll('[data-del]').forEach(b => b.onclick = () => {
+    const r = results.find(x => x.id === b.dataset.del); if (!r) return;
+    if (!confirm(`Excluir o resultado de ${r.p} (${fmtDate(r.t)})?\n\nIsso não pode ser desfeito.`)) return;
+    results = results.filter(x => x.id !== r.id); saveResults(); toast('Resultado excluído'); render();
+  });
+  const delAll = $('#delall');
+  if (delAll) delAll.onclick = () => {
+    if (!confirm(`Excluir TODOS os ${results.length} resultados salvos neste aparelho?\n\nIsso não pode ser desfeito. Se precisar guardar algum, baixe o PDF antes.`)) return;
+    results = []; saveResults(); toast('Resultados excluídos'); render();
+  };
+  const delRes = $('#delres');
+  if (delRes && S.r) delRes.onclick = () => {
+    if (!confirm(`Excluir o resultado de ${S.r.p} (${fmtDate(S.r.t)})?\n\nIsso não pode ser desfeito.`)) return;
+    results = results.filter(x => x.id !== S.r.id); saveResults(); toast('Resultado excluído'); go('results');
+  };
   document.querySelectorAll('[data-copy]').forEach(b => b.onclick = () => copy(b.dataset.copy, b.previousElementSibling && '#' + b.previousElementSibling.id));
 
   const q = $('#q');
