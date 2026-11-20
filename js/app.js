@@ -372,7 +372,7 @@ function viewPatientDone(){
 function planPill(){
   if (!LIVE) return '<span class="pill gold">Demonstração</span>';
   if (!sub) return '<span class="pill line">Sem assinatura</span>';
-  if (sub.origem === 'cortesia' && !sub.expira_em) return '<span class="pill gold">Acesso cortesia</span>';
+  if (sub.origem === 'cortesia' && !sub.expira_em) return '<span class="pill gold">Acesso vitalício</span>';
   const d = sub.expira_em ? new Date(sub.expira_em).toLocaleDateString('pt-BR') : '';
   if (sub.status === 'cancelada') return `<span class="pill line">Cancelada · acesso até ${d}</span>`;
   if (sub.status === 'atrasada') return `<span class="pill gold">Pagamento pendente</span>`;
