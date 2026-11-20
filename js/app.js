@@ -337,7 +337,7 @@ function viewQuestion(){
     <div class="progress"><i style="width:${(i/s.items.length)*100}%"></i></div>
   </div>
   <section class="stack" style="gap:20px">
-    <p class="small muted">${s.period}</p>
+    <p class="small muted">${(typeof it === 'object' && it.p) || s.period}</p>
     <p class="q">${itemQ(it)}</p>
     <div class="opts" role="group" aria-label="Opções de resposta">
       ${itemOpts(s, it).map((o,k) => `<button class="opt" data-opt="${k}" aria-pressed="${a[i]===k}"><span class="r"></span>${o}</button>`).join('')}

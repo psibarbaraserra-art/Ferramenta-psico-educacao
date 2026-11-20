@@ -14,19 +14,21 @@ Não há servidor nesta versão: os dados ficam no link e no aparelho de quem ab
 Ansiedade · Humor · Saúde materna e puerpério · Trauma · Estresse e burnout · Personalidade · Neurodesenvolvimento · Relacionamentos · Outros transtornos.
 
 ### Instrumentos validados (15)
-| Escala | Tema | Situação de uso |
-|---|---|---|
-| PHQ-9, GAD-7, PHQ-15, PHQ módulo de pânico | Depressão, ansiedade, somatização, pânico | Pfizer: sem necessidade de permissão |
-| DASS-21 | Depressão, ansiedade e estresse | Domínio público |
-| ASQ (NIMH) | Risco de suicídio | Domínio público (governo dos EUA) |
-| PCL-5, PC-PTSD-5 | TEPT e trauma | Domínio público (National Center for PTSD) |
-| ITQ | TEPT complexo | Disponibilizado gratuitamente pelos autores |
-| ACE | Experiências adversas na infância | Uso livre (CDC-Kaiser) |
-| AUDIT | Álcool | OMS, uso livre |
-| SNAP-IV | TDAH infantil | Domínio público |
-| SCOFF | Transtornos alimentares | Publicado no BMJ; confirmar uso comercial |
-| ASRS-18 Parte A | TDAH adulto | OMS; **confirmar licença para uso comercial** |
-| EPDS | Depressão pós-parto | © Royal College of Psychiatrists; **confirmar licença para uso comercial** |
+Licenças conferidas nas fontes oficiais em 20/11/2026, quando a página estava acessível.
+
+| Escala | Tema | Situação de uso comercial | Conferido na fonte |
+|---|---|---|---|
+| PHQ-9, GAD-7, PHQ-15, PHQ pânico | Depressão, ansiedade, somatização, pânico | "No permission is required to reproduce, translate, display or distribute" (phqscreeners.com) | ✅ |
+| PCL-5, PC-PTSD-5 | TEPT e trauma | "Public domain and not copyrighted" (ptsd.va.gov) | ✅ |
+| ASQ (NIMH) | Risco de suicídio | "Free of charge" (nimh.nih.gov) | ✅ |
+| AUDIT | Álcool | Publicação da OMS sob CC BY-NC-SA 3.0 IGO (não comercial). **Confirmar com a OMS** | ✅ licença lida, uso comercial pendente |
+| DASS-21 | Depressão, ansiedade, estresse | Conhecido como domínio público | ⚠️ página indisponível |
+| ITQ | TEPT complexo | Disponibilizado gratuitamente pelos autores | ⚠️ página indisponível |
+| ASRS-18 Parte A | TDAH adulto | OMS/Harvard. **Confirmar uso comercial** | ⚠️ página indisponível |
+| EPDS | Depressão pós-parto | © Royal College of Psychiatrists. **Confirmar uso comercial** | ⚠️ página indisponível |
+| SCOFF | Transtornos alimentares | Publicado no BMJ. **Confirmar uso comercial** | não consultado |
+| SNAP-IV | TDAH infantil | Conhecido como domínio público | não consultado |
+| ACE | Experiências adversas | CDC-Kaiser, uso livre | não consultado |
 
 Traduções marcadas como "tradução de trabalho" devem ser comparadas com as versões brasileiras validadas antes do uso formal.
 

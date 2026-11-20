@@ -34,7 +34,7 @@ S.phq9 = {
     {max:27, ...lvl('Sintomas graves',3,'Os sinais estão intensos e frequentes. É importante buscar cuidado especializado o quanto antes.',['Avaliação psiquiátrica e psicológica com prioridade.','Rede de apoio próxima e plano de segurança construído com o(a) profissional.'])}
   ],
   flags:v => v[8] > 0 ? [{risk:true, pro:'Resposta positiva ao item 9 (pensamentos de morte ou de autolesão). Recomenda-se avaliação de risco o quanto antes.'}] : [],
-  ref:'Kroenke, Spitzer & Williams (2001). Versão brasileira validada por Santos et al. (2013). Desenvolvido com subsídio da Pfizer; não é necessária permissão para reproduzir, traduzir ou distribuir.'
+  ref:'Kroenke, Spitzer & Williams (2001). Versão brasileira validada por Santos et al. (2013). Segundo phqscreeners.com, não é necessária permissão para reproduzir, traduzir, exibir ou distribuir.'
 };
 
 S.gad7 = {
@@ -58,31 +58,43 @@ S.gad7 = {
     {max:14, ...lvl('Ansiedade moderada',2,'A ansiedade aparece com frequência e pode estar atrapalhando o sono, a concentração ou as relações. Vale aprofundar a avaliação.',['Trabalhar estratégias de regulação na psicoterapia.','Observar gatilhos e sinais do corpo (coração acelerado, tensão muscular).','Avaliar com o(a) profissional a necessidade de avaliação médica.'])},
     {max:21, ...lvl('Ansiedade grave',3,'Os sinais de ansiedade estão intensos e presentes na maior parte dos dias. É importante receber cuidado especializado.',['Acompanhamento psicológico regular e avaliação psiquiátrica.','Construir com o(a) profissional um plano para momentos de crise.'])}
   ],
-  ref:'Spitzer, Kroenke, Williams & Löwe (2006). Desenvolvido com subsídio da Pfizer; não é necessária permissão para reproduzir, traduzir ou distribuir.'
+  ref:'Spitzer, Kroenke, Williams & Löwe (2006). Segundo phqscreeners.com, não é necessária permissão para reproduzir, traduzir, exibir ou distribuir.'
 };
 
 S.phqpanic = {
-  title:'Rastreio de Síndrome do Pânico', code:'PHQ · Módulo de Pânico', cats:['ans'], icon:'wave', minutes:1, kind:'validado',
+  title:'Rastreio de Síndrome do Pânico', code:'PHQ · Módulo de Pânico', cats:['ans'], icon:'wave', minutes:3, kind:'validado',
   topics:['Síndrome do pânico'],
-  about:'Questões centrais do módulo de pânico do Patient Health Questionnaire sobre crises de ansiedade nas últimas quatro semanas.',
+  about:'Módulo de pânico do Patient Health Questionnaire: quatro perguntas sobre crises de ansiedade nas últimas quatro semanas e onze sobre os sintomas da pior crise.',
   edu:'Uma crise de pânico é uma onda súbita de medo intenso, com coração acelerado, falta de ar, tremores, tontura e sensação de morte ou de perder o controle. No transtorno de pânico, as crises se repetem e surge o medo constante de ter novas crises.',
   period:'Nas últimas 4 semanas:', options:YN,
   items:[
     'Você teve uma crise de ansiedade, sentindo medo ou pânico de repente?',
     'Isso já tinha acontecido antes?',
-    'Algumas dessas crises surgiram de repente, em situações em que você não esperava ficar nervoso(a)?',
+    'Algumas dessas crises surgiram de repente, em situações em que você não esperava ficar nervoso(a) ou desconfortável?',
     'Essas crises incomodam muito você, ou você se preocupa em ter uma nova crise?',
-    'Durante a pior crise, você sentiu falta de ar, coração acelerado, suor, tremores, tontura ou medo de morrer?'
+    {q:'Você sentiu falta de ar?', p:'Pense na sua última crise forte de ansiedade. Durante essa crise:'},
+    {q:'Seu coração disparou, bateu forte ou falhou?', p:'Pense na sua última crise forte de ansiedade. Durante essa crise:'},
+    {q:'Você sentiu dor ou aperto no peito?', p:'Pense na sua última crise forte de ansiedade. Durante essa crise:'},
+    {q:'Você suou?', p:'Pense na sua última crise forte de ansiedade. Durante essa crise:'},
+    {q:'Você sentiu como se estivesse sufocando?', p:'Pense na sua última crise forte de ansiedade. Durante essa crise:'},
+    {q:'Você teve ondas de calor ou calafrios?', p:'Pense na sua última crise forte de ansiedade. Durante essa crise:'},
+    {q:'Você teve náusea, mal-estar no estômago ou sensação de que teria diarreia?', p:'Pense na sua última crise forte de ansiedade. Durante essa crise:'},
+    {q:'Você se sentiu tonto(a), instável ou prestes a desmaiar?', p:'Pense na sua última crise forte de ansiedade. Durante essa crise:'},
+    {q:'Você sentiu formigamento ou dormência em partes do corpo?', p:'Pense na sua última crise forte de ansiedade. Durante essa crise:'},
+    {q:'Você tremeu ou se sacudiu?', p:'Pense na sua última crise forte de ansiedade. Durante essa crise:'},
+    {q:'Você teve medo de estar morrendo?', p:'Pense na sua última crise forte de ansiedade. Durante essa crise:'}
   ],
   compute(v){
     const core = v.slice(0,4).every(x => x === 1);
-    const total = v.reduce((a,b) => a+b, 0);
-    return {total, max:5, unit:'respostas "sim"', noBar:true, level: core
-      ? lvl('Sugestivo de transtorno de pânico',2,'As respostas são compatíveis com crises de pânico recorrentes. É importante uma avaliação completa, inclusive para descartar causas físicas.',['Aprender a reconhecer a crise: ela é muito desconfortável, mas não é perigosa e passa.','Respiração lenta e ancoragem no presente durante a crise.','A Terapia Cognitivo-Comportamental é muito eficaz para o pânico.'])
-      : total > 0 ? lvl('Abaixo do ponto de corte',1,'Houve relato de alguns sinais de ansiedade intensa, mas sem o padrão completo de crises de pânico recorrentes.',['Observar quando as crises acontecem e o que as antecede.','Conversar sobre esses episódios nas sessões.'])
+    const sint = v.slice(4).filter(x => x === 1).length;
+    const dims = [{name:'Perguntas centrais sobre crises', v:v.slice(0,4).filter(x => x === 1).length, m:4, label:core ? 'Todas positivas' : 'Nem todas positivas', tone:core ? 2 : 0},
+                  {name:'Sintomas na pior crise', v:sint, m:11, label:sint >= 4 ? '4 ou mais' : 'Menos de 4', tone:sint >= 4 ? 2 : 0}];
+    return {total:sint, max:11, unit:'sintomas na pior crise', noBar:true, dims, level: core && sint >= 4
+      ? lvl('Sugestivo de transtorno de pânico',2,'As respostas atendem ao critério do PHQ para síndrome do pânico: as quatro perguntas centrais positivas e quatro ou mais sintomas na pior crise. É importante uma avaliação completa, inclusive para descartar causas físicas.',['Aprender a reconhecer a crise: ela é muito desconfortável, mas não é perigosa e passa.','Respiração lenta e ancoragem no presente durante a crise.','A Terapia Cognitivo-Comportamental é muito eficaz para o pânico.'])
+      : v.slice(0,4).some(x => x === 1) ? lvl('Abaixo do critério',1,'Houve relato de crises de ansiedade, mas sem o padrão completo de síndrome do pânico do PHQ.',['Observar quando as crises acontecem e o que as antecede.','Conversar sobre esses episódios nas sessões.'])
       : lvl('Nenhum sinal de pânico',0,'Não houve relato de crises de pânico nas últimas quatro semanas.',['Seguir observando como você se sente.'])};
   },
-  ref:'Spitzer, Kroenke & Williams (1999). Patient Health Questionnaire (PHQ), módulo de pânico, questões centrais. Desenvolvido com subsídio da Pfizer; não é necessária permissão para reproduzir.'
+  ref:'Spitzer, Kroenke & Williams (1999). Patient Health Questionnaire (PHQ), módulo de pânico. Critério: quatro perguntas centrais positivas e quatro ou mais sintomas. Segundo phqscreeners.com, não é necessária permissão para reproduzir, traduzir, exibir ou distribuir.'
 };
 
 S.dass21 = {
@@ -161,7 +173,7 @@ S.asq = {
   flags:v => v[4] === 1 ? [{risk:true, pro:'Risco agudo: resposta positiva a "Você está pensando em se matar agora?". Avaliação de segurança imediata.'}]
     : v.slice(0,4).some(x => x === 1) ? [{risk:true, pro:'Rastreio positivo para risco de suicídio. Realizar avaliação breve de risco.'}] : [],
   alwaysSupport:true,
-  ref:'Horowitz et al. (2012). Ask Suicide-Screening Questions (ASQ), National Institute of Mental Health (NIMH). Material de domínio público do governo dos EUA. Tradução de trabalho.'
+  ref:'Horowitz et al. (2012). Ask Suicide-Screening Questions (ASQ), National Institute of Mental Health (NIMH). O NIMH informa que o ASQ é gratuito. Validado a partir de 10 anos de idade. Tradução de trabalho.'
 };
 
 S.epds = {
@@ -227,7 +239,10 @@ S.pcl5 = {
     {max:32, ...lvl('Sintomas presentes, abaixo do ponto de corte',1,'Há sintomas relacionados à experiência estressante, mas abaixo do ponto de corte sugestivo de TEPT. Eles merecem cuidado e acompanhamento.',['Técnicas de ancoragem quando as lembranças surgirem.','Conversar sobre a experiência no ritmo que for possível.'])},
     {max:80, ...lvl('Sugestivo de TEPT',3,'A pontuação está acima do ponto de corte (33) sugestivo de estresse pós-traumático. É indicada uma avaliação clínica completa.',['Terapias focadas no trauma, como TCC focada no trauma ou EMDR.','Cuidar do sono e de um ambiente de segurança.','Avaliar com o(a) profissional a necessidade de avaliação psiquiátrica.'])}
   ],
-  ref:'Weathers, Litz, Keane, Palmieri, Marx & Schnurr (2013). PTSD Checklist for DSM-5 (PCL-5), National Center for PTSD. Domínio público. Tradução de trabalho; para uso formal, consulte a versão brasileira validada.'
+  flags:v => { const n = ix => ix.filter(i => v[i] >= 2).length;
+    return n([0,1,2,3,4]) >= 1 && n([5,6]) >= 1 && n([7,8,9,10,11,12,13]) >= 2 && n([14,15,16,17,18,19]) >= 2
+      ? [{pro:'Padrão de sintomas compatível com a regra diagnóstica provisória do DSM-5 (1 item B, 1 C, 2 D e 2 E marcados como "moderadamente" ou mais). Confirmar com entrevista clínica.'}] : []; },
+  ref:'Weathers, Litz, Keane, Palmieri, Marx & Schnurr (2013). PTSD Checklist for DSM-5 (PCL-5), National Center for PTSD. Domínio público, sem direitos autorais. Ponto de corte sugerido: 31 a 33. Tradução de trabalho; para uso formal, consulte a versão brasileira validada.'
 };
 
 S.pcptsd5 = {
@@ -245,9 +260,10 @@ S.pcptsd5 = {
   ],
   levels:[
     {max:2, ...lvl('Rastreio negativo',0,'As respostas não atingem o ponto de corte para sintomas de trauma. Se houver sofrimento ligado a alguma experiência, ele também merece atenção.',['Conversar sobre a experiência quando se sentir pronto(a).'])},
-    {max:5, ...lvl('Rastreio positivo',2,'As respostas atingem o ponto de corte (3 ou mais) e sugerem sintomas de trauma. Recomenda-se aprofundar a avaliação, por exemplo com o PCL-5.',['Aplicar o PCL-5 para avaliação mais detalhada.','Terapias focadas no trauma têm boa eficácia.'])}
+    {max:3, ...lvl('Limítrofe',1,'Três respostas positivas ficam logo abaixo do ponto de corte recomendado (4). Em mulheres, o corte 4 deixa passar muitos casos, por isso vale considerar aprofundar a avaliação.',['Considerar aplicar o PCL-5 para avaliação mais detalhada.','Conversar sobre a experiência no ritmo que for possível.'])},
+    {max:5, ...lvl('Rastreio positivo',2,'As respostas atingem o ponto de corte recomendado (4 ou mais) e sugerem sintomas de trauma. Recomenda-se aprofundar a avaliação, por exemplo com o PCL-5.',['Aplicar o PCL-5 para avaliação mais detalhada.','Terapias focadas no trauma têm boa eficácia.'])}
   ],
-  ref:'Prins et al. (2016). Primary Care PTSD Screen for DSM-5 (PC-PTSD-5), National Center for PTSD. Domínio público. Tradução de trabalho.'
+  ref:'Prins et al. (2016). Primary Care PTSD Screen for DSM-5 (PC-PTSD-5), National Center for PTSD. Domínio público, sem direitos autorais. Ponto de corte recomendado: 4 (considerar 3 em mulheres). Tradução de trabalho.'
 };
 
 S.itq = {
@@ -266,15 +282,15 @@ S.itq = {
     'No último mês, esses problemas afetaram seus relacionamentos ou sua vida social?',
     'No último mês, esses problemas afetaram seu trabalho ou sua capacidade de trabalhar?',
     'No último mês, esses problemas afetaram outra parte importante da sua vida (cuidar dos filhos, estudos, outras atividades)?',
-    'Quando estou chateado(a), demoro muito para me acalmar.',
-    'Me sinto entorpecido(a) ou emocionalmente desligado(a).',
-    'Me sinto um fracasso.',
-    'Me sinto sem valor.',
-    'Me sinto distante ou isolado(a) das pessoas.',
-    'Acho difícil me manter emocionalmente próximo(a) das pessoas.',
-    'No último mês, esses problemas emocionais afetaram seus relacionamentos ou sua vida social?',
-    'No último mês, esses problemas emocionais afetaram seu trabalho ou sua capacidade de trabalhar?',
-    'No último mês, esses problemas emocionais afetaram outra parte importante da sua vida?'
+    {q:'Quando estou chateado(a), demoro muito para me acalmar.', p:'Abaixo estão problemas que pessoas que viveram experiências estressantes às vezes têm. As perguntas se referem a como você costuma se sentir e se relacionar. O quanto cada frase é verdadeira para você?'},
+    {q:'Me sinto entorpecido(a) ou emocionalmente desligado(a).', p:'Abaixo estão problemas que pessoas que viveram experiências estressantes às vezes têm. As perguntas se referem a como você costuma se sentir e se relacionar. O quanto cada frase é verdadeira para você?'},
+    {q:'Me sinto um fracasso.', p:'Abaixo estão problemas que pessoas que viveram experiências estressantes às vezes têm. As perguntas se referem a como você costuma se sentir e se relacionar. O quanto cada frase é verdadeira para você?'},
+    {q:'Me sinto sem valor.', p:'Abaixo estão problemas que pessoas que viveram experiências estressantes às vezes têm. As perguntas se referem a como você costuma se sentir e se relacionar. O quanto cada frase é verdadeira para você?'},
+    {q:'Me sinto distante ou isolado(a) das pessoas.', p:'Abaixo estão problemas que pessoas que viveram experiências estressantes às vezes têm. As perguntas se referem a como você costuma se sentir e se relacionar. O quanto cada frase é verdadeira para você?'},
+    {q:'Acho difícil me manter emocionalmente próximo(a) das pessoas.', p:'Abaixo estão problemas que pessoas que viveram experiências estressantes às vezes têm. As perguntas se referem a como você costuma se sentir e se relacionar. O quanto cada frase é verdadeira para você?'},
+    {q:'No último mês, esses problemas emocionais afetaram seus relacionamentos ou sua vida social?', p:'Abaixo estão problemas que pessoas que viveram experiências estressantes às vezes têm. As perguntas se referem a como você costuma se sentir e se relacionar. O quanto cada frase é verdadeira para você?'},
+    {q:'No último mês, esses problemas emocionais afetaram seu trabalho ou sua capacidade de trabalhar?', p:'Abaixo estão problemas que pessoas que viveram experiências estressantes às vezes têm. As perguntas se referem a como você costuma se sentir e se relacionar. O quanto cada frase é verdadeira para você?'},
+    {q:'No último mês, esses problemas emocionais afetaram outra parte importante da sua vida?', p:'Abaixo estão problemas que pessoas que viveram experiências estressantes às vezes têm. As perguntas se referem a como você costuma se sentir e se relacionar. O quanto cada frase é verdadeira para você?'}
   ],
   compute(v){
     const any = (...ix) => ix.some(i => v[i] >= 2);
@@ -346,7 +362,7 @@ S.audit = {
     {max:19, ...lvl('Uso nocivo',2,'O consumo já está trazendo consequências. É indicada orientação estruturada e acompanhamento.',['Acompanhamento psicológico com foco no uso de álcool.','Avaliação médica.'])},
     {max:40, ...lvl('Provável dependência',3,'As respostas sugerem possível dependência de álcool. É indicada avaliação especializada.',['Encaminhamento para avaliação especializada (CAPS AD ou serviço de referência).','Não interromper o uso pesado de forma abrupta sem orientação médica.'])}
   ],
-  ref:'Babor, Higgins-Biddle, Saunders & Monteiro (2001). AUDIT, Organização Mundial da Saúde. Uso livre, sem necessidade de permissão.'
+  ref:'Babor, Higgins-Biddle, Saunders & Monteiro (2001). AUDIT, Organização Mundial da Saúde. A publicação da OMS é licenciada como CC BY-NC-SA 3.0 IGO (uso não comercial); para uso em produto pago, confirme a permissão com a OMS.'
 };
 
 S.scoff = {
@@ -382,7 +398,7 @@ S.phq15 = {
     {max:14, ...lvl('Sintomas somáticos médios',2,'A carga de sintomas físicos é relevante e pode estar ligada a sofrimento emocional.',['Avaliação médica para investigar causas físicas.','Trabalhar na terapia a relação entre emoções e corpo.'])},
     {max:30, ...lvl('Sintomas somáticos altos',3,'A carga de sintomas físicos é alta. É importante um cuidado integrado entre saúde física e emocional.',['Acompanhamento médico e psicológico integrados.','Evitar a busca repetida por exames sem um(a) médico(a) de referência.'])}
   ],
-  ref:'Kroenke, Spitzer & Williams (2002). PHQ-15. Desenvolvido com subsídio da Pfizer; não é necessária permissão para reproduzir.'
+  ref:'Kroenke, Spitzer & Williams (2002). PHQ-15. Segundo phqscreeners.com, não é necessária permissão para reproduzir, traduzir, exibir ou distribuir.'
 };
 
 S.asrs = {
