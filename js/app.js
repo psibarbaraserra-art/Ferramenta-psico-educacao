@@ -14,9 +14,9 @@ const fmtDate = t => new Date(t).toLocaleDateString('pt-BR', {day:'2-digit', mon
 const baseUrl = () => location.origin + location.pathname;
 const norm = s => String(s).normalize('NFD').replace(/[̀-ͯ]/g,'').toLowerCase();
 function toast(msg){ const t = $('#toast'); t.textContent = msg; t.hidden = false; clearTimeout(toast._t); toast._t = setTimeout(() => t.hidden = true, 2200); }
-function copy(text, inputSel){
-  const fallback = () => { const i = inputSel && $(inputSel); if (i){ i.focus(); i.select(); } toast('Selecione e copie o link'); };
-  try { navigator.clipboard.writeText(text).then(() => toast('Link copiado'), fallback); } catch(e){ fallback(); }
+function copy(text, inputSel, okMsg){
+  const fallback = () => { const i = inputSel && $(inputSel); if (i){ i.focus(); i.select(); } toast('Selecione o texto e copie'); };
+  try { navigator.clipboard.writeText(text).then(() => toast(okMsg || 'Link copiado'), fallback); } catch(e){ fallback(); }
 }
 
 /* ---------- Ícones ---------- */
@@ -62,6 +62,43 @@ const SUP = (window.PSI && window.PSI.support) || {
 };
 const ORDER = Object.keys(SCALES);
 const catIcon = s => s.icon || (CATS.find(c => c.id === s.cats[0]) || {}).icon;
+const EMOJI = {
+  phq9:'🌧️', gad7:'🌀', phqpanic:'💓', dass21:'⚖️', asq:'🛟', epds:'🤱', pcl5:'🛡️', pcptsd5:'🔔', itq:'🧱', ace:'🧷', audit:'🍷', scoff:'🍽️', phq15:'🩺', asrs:'🎯', snap:'🧒', burnout:'🔥',
+  a_social:'👥', a_fobia:'🕷️', a_separacao:'🫂', a_saude:'🌡️', a_desempenho:'🎤',
+  h_distimia:'🌫️', h_sazonal:'🍂', h_desesperanca:'🕯️', h_oscilacoes:'🎢', h_bipolar:'🌗',
+  m_ansiedade:'🍼', m_blues:'💧', m_sobrecarga:'🧺', m_burnout:'🪫', m_adaptacao:'🌱', m_culpa:'💭', m_vinculo:'🤍', m_gestacao:'🤰', m_puerperio:'🌙',
+  t_violencia:'🏠', t_abuso:'💔', t_luto:'🥀', t_dissociacao:'🪞',
+  b_cronico:'⏳', b_sobrecarga:'🎒', b_compaixao:'🤲', b_exaustao:'🧠', b_trabalho:'💼', b_equilibrio:'🪴',
+  p_borderline:'🌊', p_narcisista:'👑', p_dependente:'🔗', p_evitativa:'🐚', p_antissocial:'🚧', p_obsessiva:'📐', p_instabilidade:'🌪️', p_abandono:'🚪',
+  n_tea_adulto:'🧩', n_tea_infantil:'🪀', n_atencao:'🔍', n_impulsividade:'⚡', n_hiperatividade:'🏃', n_executivas:'🗂️', n_social:'💬',
+  r_dependencia:'🪢', r_ciume:'👀', r_rejeicao:'🥺', r_autoestima:'🌻', r_inseguranca:'🫥', r_limites:'✋', r_regulacao:'🎚️', r_comunicacao:'🗣️', r_abusivo:'⚠️', r_codependencia:'🤝',
+  o_toc:'🔁', o_compulsao:'🍫', o_sono:'😴', o_luto:'🕊️', o_substancias:'💊'
+};
+const icoHTML = id => EMOJI[id] ? `<span class="emo" aria-hidden="true">${EMOJI[id]}</span>` : icon(catIcon(SCALES[id]));
+const REFER = {
+  ans:'Psiquiatria, para avaliar a indicação de tratamento medicamentoso, e psicoterapia (TCC)',
+  hum:'Psiquiatria',
+  mat:'Psiquiatria (de preferência perinatal), com comunicação à equipe de obstetrícia ou pediatria',
+  tra:'Psicoterapia especializada em trauma (TCC focada no trauma ou EMDR) e psiquiatria',
+  bur:'Psiquiatria e medicina do trabalho',
+  per:'Psiquiatria e psicoterapia especializada (por exemplo, DBT)',
+  neu:'Avaliação neuropsicológica e psiquiatria ou neurologia',
+  rel:'Psicoterapia individual ou de casal',
+  out:'Psiquiatria'
+};
+const REFER_ID = {
+  audit:'CAPS AD ou psiquiatria com experiência em dependência química', o_substancias:'CAPS AD ou psiquiatria com experiência em dependência química',
+  scoff:'Equipe multiprofissional em transtornos alimentares (psiquiatria e nutrição)', o_compulsao:'Equipe multiprofissional em transtornos alimentares (psiquiatria e nutrição)',
+  o_sono:'Medicina do sono ou psiquiatria', phq15:'Clínica médica, para investigar causas físicas, e psiquiatria', a_saude:'Clínica médica de referência e psiquiatria',
+  snap:'Neuropediatria ou psiquiatria infantil, com avaliação neuropsicológica', n_tea_infantil:'Neuropediatria ou psiquiatria infantil, com equipe multiprofissional',
+  n_tea_adulto:'Psiquiatria e avaliação neuropsicológica com experiência em TEA no adulto',
+  t_violencia:'Rede de proteção (CRAM, CREAS ou Delegacia da Mulher) e psicoterapia especializada em trauma', r_abusivo:'Rede de proteção (CRAM ou CREAS) e psicoterapia',
+  asq:'Avaliação psiquiátrica com prioridade; em risco agudo, serviço de emergência (SAMU 192 ou pronto-socorro)',
+  h_bipolar:'Psiquiatria, para investigação do espectro bipolar', o_toc:'Psiquiatria e psicoterapia com exposição e prevenção de resposta',
+  m_vinculo:'Psiquiatria perinatal e intervenção na relação mãe-bebê', b_compaixao:'Supervisão clínica e psicoterapia pessoal'
+};
+const referFor = id => REFER_ID[id] || REFER[SCALES[id].cats[0]] || 'Psiquiatria';
+const hypothesis = s => (s.topics && s.topics.length ? s.topics.join('; ') : s.title.replace(/^Rastreio (de |do |da )?/,''));
 
 /* ---------- Pontuação ---------- */
 const itemQ = it => typeof it === 'string' ? it : it.q;
@@ -122,8 +159,8 @@ function topbar(active){
 function card(id){
   const s = SCALES[id];
   return `<article class="tool" role="button" tabindex="0" data-tool="${id}">
-    <div class="badge-slot">${s.kind === 'validado' ? '<span class="pill">Validado</span>' : '<span class="pill gold">Psicoeducativo</span>'}</div>
-    <div class="ico">${icon(catIcon(s))}</div>
+    <div class="badge-slot">${s.kind === 'validado' ? '<span class="pill">Escala validada</span>' : '<span class="pill gold">Rastreio</span>'}</div>
+    <div class="ico">${icoHTML(id)}</div>
     <div class="name">${s.title.replace(/^Rastreio (de |do |da )?/,'')}</div>
     <div class="meta">${s.kind === 'validado' ? s.code + ' · ' : ''}${s.items.length} perguntas</div>
   </article>`;
@@ -163,7 +200,7 @@ function viewHome(){
   </section>
   <section class="stack">
     <div class="section-head"><h2>Biblioteca de rastreios</h2>
-      <div class="stats"><span class="pill line">${ORDER.length} rastreios</span><span class="pill">${nVal} validados</span><span class="pill gold">${ORDER.length - nVal} psicoeducativos</span></div>
+      <div class="stats"><span class="pill line">${ORDER.length} instrumentos</span><span class="pill">${nVal} escalas validadas</span><span class="pill gold">${ORDER.length - nVal} rastreios Psique</span></div>
     </div>
     <label class="search" for="q">${icon('search',18)}<input class="input" id="q" type="search" placeholder="Buscar tema, sintoma ou escala" value="${esc(lib.q)}" autocomplete="off"></label>
     <div class="chips" role="group" aria-label="Categorias">
@@ -201,10 +238,10 @@ function viewTool(){
   return `${topbar('home')}
   <button class="back" data-go="home">${icon('back',16)} Voltar</button>
   <section class="card stack">
-    <div style="display:flex;gap:14px;align-items:center"><div class="ico" style="flex:none">${icon(catIcon(s))}</div><div style="min-width:0"><p class="eyebrow">${cat ? cat.short : ''}${s.kind === 'validado' ? ' · ' + s.code : ''}</p><h2>${s.title}</h2></div></div>
+    <div style="display:flex;gap:14px;align-items:center"><div class="ico" style="flex:none">${icoHTML(id)}</div><div style="min-width:0"><p class="eyebrow">${cat ? cat.short : ''}${s.kind === 'validado' ? ' · ' + s.code : ''}</p><h2>${s.title}</h2></div></div>
     <p>${s.about}</p>
     ${s.topics && s.topics.length ? `<div class="topics">${s.topics.map(t => `<span class="pill line">${esc(t)}</span>`).join('')}</div>` : ''}
-    <div class="btn-row" style="font-size:.85rem"><span class="pill line">${s.items.length} perguntas</span><span class="pill line">${s.minutes} minutos</span><span class="pill ${s.kind==='validado'?'':'gold'}">${s.kind==='validado'?'Instrumento validado':'Questionário psicoeducativo'}</span></div>
+    <div class="btn-row" style="font-size:.85rem"><span class="pill line">${s.items.length} perguntas</span><span class="pill line">${s.minutes} minutos</span><span class="pill ${s.kind==='validado'?'':'gold'}">${s.kind==='validado'?'Escala validada':'Rastreio de triagem'}</span></div>
     ${s.resp ? `<p class="small"><strong>Quem responde:</strong> ${esc(s.resp)}</p>` : ''}
   </section>
   <section class="card stack">
@@ -278,7 +315,7 @@ function viewReport(){
     <dl class="kv">
       <dt>Paciente</dt><dd>${esc(r.p)}</dd>
       <dt>Data</dt><dd>${fmtDate(r.t)}</dd>
-      <dt>Instrumento</dt><dd>${esc(s.kind === 'validado' ? s.code : 'Questionário psicoeducativo')}</dd>
+      <dt>Instrumento</dt><dd>${esc(s.kind === 'validado' ? s.code : 'Rastreio de triagem Psique')}</dd>
       <dt>Profissional</dt><dd>${esc(who.name)}${who.crp ? ' · ' + esc(who.crp) : ''}</dd>
     </dl>
     ${c.flags.map(f => `<div class="alert"><strong>Atenção:</strong> ${f.pro}</div>`).join('')}
@@ -297,6 +334,17 @@ function viewReport(){
       ${s.edu ? `<h3 style="margin-top:8px">Sobre o tema</h3><p>${s.edu}</p>` : ''}
     </section>
     ${c.support.length ? `<div class="support">${c.support.join('<br>')}</div>` : ''}
+    ${(c.level.tone >= 2 || c.flags.some(f => f.risk)) ? `<section class="refer stack no-print-break">
+      <h3>Hipótese e encaminhamento</h3>
+      <dl class="kv">
+        <dt>Hipótese a investigar</dt><dd>${esc(hypothesis(s))}</dd>
+        <dt>Encaminhamento sugerido</dt><dd>${esc(referFor(r.s))}</dd>
+      </dl>
+      <label class="f no-print" for="reftxt">Texto de encaminhamento (pode editar antes de copiar)
+        <textarea class="input" id="reftxt" rows="7">${esc(referralText(r, s, c, who))}</textarea>
+      </label>
+      <button class="btn soft no-print" id="refcopy">Copiar texto de encaminhamento</button>
+    </section>` : ''}
     <details><summary>Respostas item a item</summary><table class="answers" style="margin-top:10px"><tbody>${answers}</tbody></table></details>
     <p class="disclaimer">Este rastreio é uma ferramenta de triagem e psicoeducação. O resultado não é um diagnóstico e deve ser interpretado por profissional habilitado(a), junto com a entrevista clínica e a história do paciente. ${s.ref}</p>
     <div class="sign"><strong>${esc(who.name)}</strong><span class="muted">${esc(who.crp||'')}</span></div>
@@ -306,6 +354,18 @@ function viewReport(){
     <a class="btn soft" href="https://wa.me/?text=${encodeURIComponent(shareMsg)}" target="_blank" rel="noopener">${icon('wa',18)} Enviar devolutiva</a>
   </div>
   <p class="small muted no-print">A devolutiva traz apenas a faixa e as orientações, sem a pontuação.</p>`;
+}
+
+function referralText(r, s, c, who){
+  const res = c.unit === 'pontos' ? `${c.total} de ${c.max} pontos` : `${c.total} ${c.unit}`;
+  return `Encaminho ${r.p} para avaliação em ${referFor(r.s).charAt(0).toLowerCase() + referFor(r.s).slice(1)}.
+
+Em ${fmtDate(r.t)}, foi aplicado o instrumento "${s.title}"${s.kind === 'validado' ? ` (${s.code})` : ''}, com resultado na faixa "${c.level.label}" (${res}).
+Hipótese a investigar: ${hypothesis(s)}.
+
+O rastreio é um instrumento de triagem e não constitui diagnóstico. Solicito avaliação especializada para confirmação ou descarte da hipótese. Coloco-me à disposição para troca de informações.
+
+${who.name || ''}${who.crp ? '\n' + who.crp : ''}`;
 }
 
 /* ---------- Telas do paciente ---------- */
@@ -510,6 +570,7 @@ function bind(){
     results.push(r); saveResults(); patient = null; go('report', {r});
   };
 
+  const rcp = $('#refcopy'); if (rcp) rcp.onclick = () => copy($('#reftxt').value, '#reftxt', 'Texto copiado');
   const pdf = $('#pdf'); if (pdf) pdf.onclick = () => { try { window.print(); } catch(e){} };
 
   const pf = $('#pf');

@@ -1,4 +1,4 @@
-/* Psique Rastreios — questionários psicoeducativos autorais.
+/* Psique Rastreios — rastreios de triagem autorais.
    Escritos para este app, a partir de critérios descritivos (DSM-5-TR / CID-11).
    Não são instrumentos validados: servem para psicoeducação e para orientar a entrevista clínica. */
 (function(){
@@ -6,8 +6,8 @@ const P = window.PSI = window.PSI || {scales:{}};
 const FREQ = ['Nunca','Raramente','Às vezes','Frequentemente','Sempre'];
 const AGREE = ['Discordo totalmente','Discordo','Nem concordo nem discordo','Concordo','Concordo totalmente'];
 const YN = ['Não','Sim'];
-const NOTE = ' Questionário psicoeducativo autoral, não validado: apoia a conversa clínica e não substitui a avaliação.';
-const REF = 'Questionário psicoeducativo autoral Psique Rastreios, elaborado a partir de critérios descritivos do DSM-5-TR e da CID-11. Não validado psicometricamente.';
+const NOTE = ' Rastreio de triagem construído a partir dos critérios do DSM-5-TR e da CID-11, para levantar hipóteses e orientar encaminhamentos.';
+const REF = 'Rastreio de triagem Psique, construído a partir dos critérios descritivos do DSM-5-TR e da CID-11. Instrumento de apoio à formulação de hipóteses; ainda não passou por estudo de validação psicométrica.';
 const SUP = {
   suicide:'Se você estiver pensando em se machucar ou em tirar a própria vida, procure ajuda agora: CVV 188 (gratuito, 24h) ou SAMU 192.',
   violence:'Se você estiver em situação de violência: Ligue 180 (Central de Atendimento à Mulher), Disque 100 (Direitos Humanos) ou 190 em caso de emergência.'
@@ -27,7 +27,7 @@ function A(id, d){
     {max:max, label:d.scale === 'agree' ? 'Traços marcantes' : 'Sinais elevados', tone:3, text:`Os ${w} ${th} aparecem de forma intensa. É importante dar prioridade a esse cuidado, com acompanhamento profissional próximo.`, care:d.tips.concat(['Dar prioridade a esse cuidado, com acompanhamento profissional próximo.'])}
   ];
   P.scales[id] = {
-    title:d.t, code:'Psicoeducativo', cats:d.cats, icon:d.icon, kind:'autoral', topics:d.topics || [],
+    title:d.t, code:'Rastreio Psique', cats:d.cats, icon:d.icon, kind:'autoral', topics:d.topics || [],
     minutes:Math.max(2, Math.round(d.items.length * 0.3)),
     about:d.edu + NOTE, edu:d.edu,
     period:d.period || (d.scale === 'agree' ? 'Quanto cada frase descreve você, na maior parte da sua vida?' : 'Pensando nas últimas semanas, com que frequência isto acontece com você?'),

@@ -464,9 +464,9 @@ S.snap = {
 };
 
 S.burnout = {
-  title:'Rastreio de Sinais de Burnout', code:'Psicoeducativo', cats:['bur'], icon:'flame', minutes:4, kind:'autoral',
+  title:'Rastreio de Sinais de Burnout', code:'Rastreio Psique', cats:['bur'], icon:'flame', minutes:4, kind:'autoral',
   topics:['Síndrome de Burnout ocupacional'],
-  about:'Doze afirmações sobre exaustão, distanciamento e sensação de eficácia no trabalho. É um questionário de psicoeducação criado para este app. Não é um instrumento validado e não substitui a avaliação clínica.',
+  about:'Doze afirmações sobre exaustão, distanciamento e sensação de eficácia no trabalho, organizadas nas três dimensões do burnout descritas na CID-11. Rastreio de triagem para levantar hipóteses e orientar encaminhamentos.',
   edu:'O burnout é um fenômeno ocupacional reconhecido pela OMS (CID-11), resultado de estresse crônico no trabalho que não foi bem administrado. Tem três dimensões: exaustão, distanciamento ou cinismo em relação ao trabalho e sensação de eficácia reduzida.',
   period:'Pensando no último mês, com que frequência isto acontece com você?', options:['Nunca','Raramente','Às vezes','Frequentemente','Sempre'],
   items:[
@@ -490,6 +490,6 @@ S.burnout = {
     {max:36, ...lvl('Sinais elevados',2,'O desgaste está frequente e pode estar afetando saúde, relações e desempenho. Vale olhar para isso com prioridade.',['Aprofundar a avaliação com o(a) psicólogo(a).','Considerar avaliação médica, inclusive do sono.','Mapear com apoio o que pode mudar na rotina de trabalho.'])},
     {max:48, ...lvl('Sinais muito elevados',3,'Os sinais de esgotamento estão intensos. Cuidar disso agora é uma necessidade de saúde, não um luxo.',['Avaliação clínica com prioridade (psicológica e médica).','Discutir com o(a) profissional a possibilidade de afastamento ou de ajustes no trabalho.'])}
   ],
-  ref:'Questionário psicoeducativo autoral, inspirado nas dimensões descritas na CID-11 (QD85). Não validado psicometricamente.'
+  ref:'Rastreio de triagem Psique, construído a partir das dimensões descritas na CID-11 (QD85). Instrumento de apoio à formulação de hipóteses; ainda não passou por estudo de validação psicométrica.'
 };
 })();

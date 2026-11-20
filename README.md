@@ -32,8 +32,8 @@ Licenças conferidas nas fontes oficiais em 20/11/2026, quando a página estava 
 
 Traduções marcadas como "tradução de trabalho" devem ser comparadas com as versões brasileiras validadas antes do uso formal.
 
-### Questionários psicoeducativos autorais (60)
-Escritos para este app a partir de critérios descritivos do DSM-5-TR e da CID-11. **Não são validados**: servem para psicoeducação e para orientar a entrevista clínica. Precisam de revisão clínica antes da venda.
+### Rastreios de triagem Psique (60)
+Construídos para este app a partir dos critérios do DSM-5-TR e da CID-11, para levantar hipóteses e orientar encaminhamentos. Ainda não passaram por estudo de validação psicométrica, e isso aparece na referência de cada um. Precisam de revisão clínica antes da venda.
 
 ### Cuidados de segurança embutidos
 - Itens de risco (PHQ-9 item 9, EPDS item 10, ASQ, desesperança, puerpério, borderline) geram alerta no relatório e mostram ao paciente o CVV 188 e o SAMU 192.
