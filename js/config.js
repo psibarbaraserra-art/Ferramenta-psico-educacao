@@ -5,5 +5,10 @@ window.PSIQUE_CONFIG = {
   supabaseKey: 'sb_publishable_88sPv20T9csLi-8biKBpwQ_RnmvOqP1',
   checkoutUrl: 'https://pay.kiwify.com.br/mdAL7hc',
   preco: 'R$ 39,90 por mês',
-  versao: '2026.11.20-2'   // ao publicar mudanças, atualize aqui e nos ?v= do index.html e do vendas.html
+  responsavel: '',          // nome completo da responsável técnica (aparece nos Termos, na Política e na página de vendas)
+  crp: '',                  // registro profissional, ex.: CRP 06/123456
+  contato: '',              // e-mail para suporte e para pedidos de privacidade
+  foro: '',                 // cidade/UF do foro dos Termos de Uso
+  termosVersao: '2026-11-20',
+  versao: '2026.11.20-3'   // ao publicar mudanças, atualize aqui e nos ?v= do index.html e do vendas.html
 };

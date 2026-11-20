@@ -189,7 +189,7 @@ function viewHome(){
     : !pro.name ? `<div class="banner no-print"><span>Complete seu perfil para personalizar convites e relatórios.</span><button class="btn primary" data-go="profile">Completar perfil</button></div>` : ''}
   <section class="access">
     <div style="display:flex;justify-content:center;margin-bottom:6px">${BIGLOGO}</div>
-    <h1>Ferramentas de Psicoeducação</h1>
+    <h1>Ferramentas de Rastreio</h1>
     <p class="tag">rastreios que acolhem e orientam</p>
     <div class="rule"></div>
     <div class="who">
@@ -246,7 +246,8 @@ function viewTool(){
   </section>
   <section class="card stack">
     <h3>Enviar para o paciente responder</h3>
-    <label class="f" for="pname">${s.resp && /criança/i.test(s.resp) ? 'Nome da criança' : 'Nome do paciente'}<input class="input" id="pname" placeholder="Ex.: Maria Souza" autocomplete="off"></label>
+    <label class="f" for="pname">${s.resp && /criança/i.test(s.resp) ? 'Nome da criança' : 'Nome do paciente'}<input class="input" id="pname" placeholder="Ex.: Maria S. ou M.S." autocomplete="off"></label>
+    <p class="small muted">Por privacidade, use só o primeiro nome ou as iniciais. O nome e as respostas viajam dentro do link.</p>
     ${s.noFeedback ? `<p class="small muted">Por cuidado clínico, este rastreio não mostra devolutiva automática ao paciente. O resultado chega só para você.</p>`
       : `<label class="check" for="showres"><input type="checkbox" id="showres"> Mostrar uma devolutiva ao paciente ao final (sem pontuação)</label>`}
     <button class="btn primary block" id="mklink">Gerar link</button>
@@ -283,6 +284,7 @@ function viewProfile(){
     <h3>Plano</h3>
     <p>${planPill()} <span class="muted small">Inclui todas as atualizações da biblioteca.</span></p>
     ${user ? `<p class="small muted">Conta: ${esc(user.email)}</p>` : ''}
+    <p class="small"><a href="termos.html" target="_blank" rel="noopener">Termos de Uso</a> · <a href="privacidade.html" target="_blank" rel="noopener">Política de Privacidade</a></p>
     <button class="btn ghost" id="logout">${LIVE ? 'Sair da conta' : 'Sair e apagar dados deste aparelho'}</button>
   </section>`;
 }
@@ -346,7 +348,7 @@ function viewReport(){
       <button class="btn soft no-print" id="refcopy">Copiar texto de encaminhamento</button>
     </section>` : ''}
     <details><summary>Respostas item a item</summary><table class="answers" style="margin-top:10px"><tbody>${answers}</tbody></table></details>
-    <p class="disclaimer">Este rastreio é uma ferramenta de triagem e psicoeducação. O resultado não é um diagnóstico e deve ser interpretado por profissional habilitado(a), junto com a entrevista clínica e a história do paciente. ${s.ref}</p>
+    <p class="disclaimer">Este rastreio é um instrumento de triagem. O resultado não é um diagnóstico e deve ser interpretado por profissional habilitado(a), junto com a entrevista clínica e a história do paciente. ${s.ref}</p>
     <div class="sign"><strong>${esc(who.name)}</strong><span class="muted">${esc(who.crp||'')}</span></div>
   </article>
   <div class="btn-row no-print">
@@ -380,7 +382,8 @@ function viewPatientIntro(){
     <div class="stack" style="text-align:left;position:relative">
       <p>Você recebeu o questionário <strong>${s.title}</strong>. São ${s.items.length} perguntas rápidas, cerca de ${s.minutes} minutos.</p>
       ${s.resp ? `<p class="small"><strong>Quem deve responder:</strong> ${esc(s.resp)}${child && patient.p ? `, pensando em ${esc(patient.p.split(' ')[0])}` : ''}.</p>` : ''}
-      <p class="muted small">Não existem respostas certas ou erradas. Responda com sinceridade. As respostas serão vistas apenas por ${esc(patient.n || 'seu(sua) profissional')}.</p>
+      <p class="muted small">Não existem respostas certas ou erradas. Responda com sinceridade.</p>
+      <label class="check" for="consent"><input type="checkbox" id="consent"> <span class="small">Concordo em responder e em enviar minhas respostas para ${esc(patient.n || 'meu(minha) profissional')}, que fica responsável por elas. Este questionário é uma triagem e não é um diagnóstico. As respostas não ficam guardadas em nenhum servidor. <a href="privacidade.html" target="_blank" rel="noopener">Saiba mais</a>.</span></label>
       <button class="btn primary block" id="start">Começar</button>
     </div>
   </section>
@@ -442,7 +445,7 @@ function shell(inner){
   return `<section class="access">
     <div style="display:flex;justify-content:center;margin-bottom:6px">${BIGLOGO}</div>
     <h1>Psique Rastreios</h1>
-    <p class="tag">ferramentas de psicoeducação</p>
+    <p class="tag">ferramentas de rastreio</p>
     <div class="rule"></div>
     <div class="stack" style="text-align:left;position:relative">${inner}</div>
   </section>`;
@@ -459,12 +462,13 @@ function viewLogin(){
     <form id="lf" class="stack">
       <label class="f" for="l-email">E-mail<input class="input" id="l-email" type="email" required autocomplete="email" value="${esc(S.email||'')}"></label>
       <label class="f" for="l-pass">Senha<input class="input" id="l-pass" type="password" required minlength="6" autocomplete="${signup ? 'new-password' : 'current-password'}"></label>
+      ${signup ? `<label class="check" for="l-terms"><input type="checkbox" id="l-terms" required> <span>Sou profissional de saúde habilitado(a) e li e aceito os <a href="termos.html" target="_blank" rel="noopener">Termos de Uso</a> e a <a href="privacidade.html" target="_blank" rel="noopener">Política de Privacidade</a>.</span></label>` : ''}
       <button class="btn primary" type="submit">${signup ? 'Criar minha conta' : 'Entrar'}</button>
     </form>
     <p id="lmsg" class="small" style="color:var(--t3)">${esc(S.msg||'')}</p>
     <p class="small muted">${signup ? 'Use o mesmo e-mail da sua compra na Kiwify. A senha precisa ter pelo menos 6 caracteres.' : 'Use o e-mail da sua compra na Kiwify.'}</p>
     ${signup ? '' : '<button class="back" data-mode="forgot">Esqueci minha senha</button>'}`) +
-    `<p class="foot">Assinatura ${esc(CFG.preco || '')}${CFG.checkoutUrl ? ` · <a href="${esc(CFG.checkoutUrl)}" target="_blank" rel="noopener">Assinar agora</a>` : ''}</p>`;
+    `<p class="foot">Assinatura ${esc(CFG.preco || '')}${CFG.checkoutUrl ? ` · <a href="${esc(CFG.checkoutUrl)}" target="_blank" rel="noopener">Assinar agora</a>` : ''}<br><a href="termos.html" target="_blank" rel="noopener">Termos de Uso</a> · <a href="privacidade.html" target="_blank" rel="noopener">Política de Privacidade</a></p>`;
 }
 function viewNoAccess(){
   const why = !sub ? `Não encontramos uma assinatura para <strong>${esc(user.email)}</strong>.`
@@ -555,7 +559,7 @@ function bind(){
   }
   const sim = $('#simulate'); if (sim) sim.onclick = () => startPatient({s:S.id, p:($('#pname').value||'').trim(), n:pro.name, c:pro.crp, w:pro.wa, v:!!($('#showres') && $('#showres').checked), sim:true});
 
-  const st = $('#start'); if (st) st.onclick = () => go('pQ', {i:0});
+  const st = $('#start'); if (st) st.onclick = () => { const c = $('#consent'); if (c && !c.checked) { toast('Marque a caixa de concordância para começar'); c.focus(); return; } go('pQ', {i:0}); };
   document.querySelectorAll('[data-opt]').forEach(b => b.onclick = () => {
     patient.a[S.i] = +b.dataset.opt;
     document.querySelectorAll('[data-opt]').forEach(x => x.setAttribute('aria-pressed', x === b));
@@ -601,7 +605,10 @@ function bind(){
         if (error) return msg(ERR(error.message));
         return msg('Se houver uma conta com este e-mail, você vai receber um link para criar uma nova senha.');
       }
-      const {data, error} = S.mode === 'signup' ? await sb.auth.signUp({email, password:pass}) : await sb.auth.signInWithPassword({email, password:pass});
+      if (S.mode === 'signup' && !($('#l-terms') && $('#l-terms').checked)) return msg('Para criar a conta, confirme que aceita os Termos de Uso e a Política de Privacidade.');
+      const {data, error} = S.mode === 'signup'
+        ? await sb.auth.signUp({email, password:pass, options:{data:{aceite_termos:new Date().toISOString(), versao_termos:CFG.termosVersao || ''}}})
+        : await sb.auth.signInWithPassword({email, password:pass});
       if (error) return msg(ERR(error.message));
       if (!data.session) return msg('Conta criada. Confirme seu e-mail pelo link que enviamos e depois entre.');
       user = data.session.user; await loadAccount(); afterLogin();

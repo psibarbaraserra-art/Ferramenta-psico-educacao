@@ -23,7 +23,13 @@ Deno.serve(async (req) => {
   const proximo = assinatura.next_payment ? Date.parse(assinatura.next_payment) : NaN;
   const agora = Date.now();
 
-  await sb.from("eventos_kiwify").insert({ tipo, email, payload: body });
+  // LGPD: guarda só o necessário para conferir a assinatura (sem nome, CPF, telefone, IP ou endereço)
+  const minimo = {
+    webhook_event_type: tipo, order_id: body.order_id ?? null, order_status: body.order_status ?? null,
+    product_id: body.Product?.product_id ?? null, subscription_status: assinatura.status ?? null,
+    next_payment: assinatura.next_payment ?? null, approved_date: body.approved_date ?? null,
+  };
+  await sb.from("eventos_kiwify").insert({ tipo, email, payload: minimo });
   if (!email) return new Response("sem e-mail", { status: 200 });
 
   let status: string | null = null;

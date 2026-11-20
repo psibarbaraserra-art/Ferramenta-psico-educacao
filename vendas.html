@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Psique Rastreios · Ferramentas de Psicoeducação</title>
+<title>Psique Rastreios · Ferramentas de Rastreio</title>
 <meta name="description" content="75 rastreios psicológicos para enviar ao paciente pelo WhatsApp. Ele responde no celular e você recebe o relatório pronto.">
 <meta name="theme-color" content="#6B7A4B">
 <meta property="og:title" content="Psique Rastreios">
@@ -258,19 +258,21 @@ footer{border-top:1px solid var(--line);padding-block:32px 48px;font-size:.85rem
     <details><summary>O paciente precisa criar conta?</summary><p>Não. Ele recebe o link, responde e envia as respostas para você pelo WhatsApp, sem cadastro.</p></details>
     <details><summary>Quais instrumentos são validados?</summary><p>PHQ-9, GAD-7, PHQ-15, módulo de pânico do PHQ, DASS-21, ASQ, PCL-5, PC-PTSD-5, ITQ, ACE e SNAP-IV. Os demais são rastreios de triagem Psique, construídos a partir dos critérios do DSM-5-TR e da CID-11 para levantar hipóteses e orientar encaminhamentos.</p></details>
     <details><summary>O resultado é um diagnóstico?</summary><p>Não. Os rastreios ajudam a identificar sinais e orientar a conversa clínica. A avaliação e o diagnóstico continuam sendo responsabilidade do profissional.</p></details>
-    <details><summary>Onde ficam os dados dos pacientes?</summary><p>As respostas viajam dentro do link que o paciente envia para você e ficam salvas apenas no aparelho onde você abre o resultado. Nenhum dado de paciente é guardado em servidor.</p></details>
+    <details><summary>Onde ficam os dados dos pacientes?</summary><p>As respostas viajam dentro do link que o paciente envia para você e ficam salvas apenas no aparelho onde você abre o resultado. Nenhum dado de paciente é guardado em servidor. Por privacidade, o app orienta a identificar o paciente só pelo primeiro nome ou pelas iniciais.</p></details>
     <details><summary>Como cancelo a assinatura?</summary><p>Pela sua conta na Kiwify, a qualquer momento. O acesso continua até o fim do período já pago.</p></details>
   </section>
 
   <footer>
-    <span>Psique Rastreios · ferramentas de psicoeducação</span>
+    <span>Psique Rastreios · ferramentas de rastreio</span>
+    <span data-resp></span>
+    <span><a href="termos.html">Termos de Uso</a> · <a href="privacidade.html">Política de Privacidade</a></span>
     <span>Ferramenta de apoio ao trabalho clínico. Não realiza diagnóstico.</span>
   </footer>
 </div>
 
-<script src="js/config.js?v=2026.11.20-2"></script>
-<script src="js/escalas-validadas.js?v=2026.11.20-2"></script>
-<script src="js/escalas-psicoeducativas.js?v=2026.11.20-2"></script>
+<script src="js/config.js?v=2026.11.20-3"></script>
+<script src="js/escalas-validadas.js?v=2026.11.20-3"></script>
+<script src="js/escalas-psicoeducativas.js?v=2026.11.20-3"></script>
 <script>
 (function(){
   var cfg = window.PSIQUE_CONFIG || {};
@@ -278,6 +280,7 @@ footer{border-top:1px solid var(--line);padding-block:32px 48px;font-size:.85rem
     if (cfg.checkoutUrl) { a.href = cfg.checkoutUrl; a.target = '_blank'; a.rel = 'noopener'; }
     else { a.href = '#assinar'; }
   });
+  if (cfg.responsavel) { document.querySelectorAll('[data-resp]').forEach(function(e){ e.textContent = 'Responsável técnica: ' + cfg.responsavel + (cfg.crp ? ' · ' + cfg.crp : ''); }); }
   var S = (window.PSI && window.PSI.scales) || null;
   if (!S) return;
   var ids = Object.keys(S).filter(function(i){ return !S[i].hidden; }), val = ids.filter(function(i){ return S[i].kind === 'validado'; }).length;
