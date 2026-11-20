@@ -414,6 +414,7 @@ function viewNoAccess(){
   return shell(`<h3>Acesso não liberado</h3>
     <p>${why}</p>
     <p class="small muted">Se você acabou de assinar, aguarde alguns minutos e toque em "Verificar de novo". Confira se entrou com o mesmo e-mail usado na Kiwify.</p>
+    ${accErr ? `<p class="small" style="color:var(--t3)">Detalhe técnico: ${esc(accErr)}</p>` : ''}
     ${CFG.checkoutUrl ? `<a class="btn primary block" href="${esc(CFG.checkoutUrl)}" target="_blank" rel="noopener">Assinar por ${esc(CFG.preco || '')}</a>` : ''}
     <button class="btn soft block" id="recheck">Verificar de novo</button>
     <button class="btn ghost block" id="logout">Sair e entrar com outro e-mail</button>`);
@@ -432,11 +433,15 @@ const ERR = m => /Invalid login/i.test(m) ? 'E-mail ou senha incorretos.'
   : /fetch|network/i.test(m) ? 'Sem conexão com o servidor. Verifique sua internet.'
   : 'Não foi possível concluir: ' + m;
 
+let accErr = '';
 async function loadAccount(){
-  const [{data:a}, {data:p}] = await Promise.all([
+  if (!user) { const {data} = await sb.auth.getSession(); user = data.session ? data.session.user : null; }
+  if (!user) { sub = null; accErr = 'sessão expirada'; return; }
+  const [{data:a, error:ea}, {data:p}] = await Promise.all([
     sb.from('assinaturas').select('*').maybeSingle(),
     sb.from('perfis').select('*').eq('id', user.id).maybeSingle()
   ]);
+  accErr = ea ? ea.message : '';
   sub = a || null;
   pro = p ? {name:p.nome || '', crp:p.crp || '', wa:p.whatsapp || ''} : {name:'', crp:'', wa:''};
 }
@@ -541,13 +546,13 @@ function bind(){
       user = data.session.user; await loadAccount(); afterLogin();
     } catch(err){ msg(ERR(String(err && err.message || err))); }
   };
-  const rc = $('#recheck'); if (rc) rc.onclick = async () => { rc.disabled = true; await loadAccount(); if (ativa(sub)) afterLogin(); else { toast('Ainda não encontramos a assinatura'); rc.disabled = false; } };
+  const rc = $('#recheck'); if (rc) rc.onclick = async () => { rc.disabled = true; await loadAccount(); if (ativa(sub)) afterLogin(); else { toast(accErr ? 'Erro ao verificar: ' + accErr : 'Ainda não encontramos a assinatura'); rc.disabled = false; } };
   const npf = $('#npf');
   if (npf) npf.onsubmit = async e => {
     e.preventDefault();
     const {error} = await sb.auth.updateUser({password:$('#np').value});
     if (error) { $('#lmsg').textContent = ERR(error.message); return; }
-    toast('Senha alterada'); afterLogin();
+    toast('Senha alterada'); await loadAccount(); afterLogin();
   };
 }
 
