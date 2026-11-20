@@ -1,6 +1,6 @@
 # Passagem para o MindApp · Psique Ferramentas
 
-Leia este documento no início da nova conversa. Ele resume a marca, a identidade visual e a infraestrutura que já existem no Psique Rastreios, para o MindApp seguir o mesmo padrão e se integrar a ele.
+Leia este documento no início da nova conversa. O **MindApp é um produto independente**, com código, banco de dados, login, venda e regras próprios. Do Psique Rastreios ele herda **apenas a identidade visual** da marca Psique Ferramentas. A seção 3 descreve a infraestrutura do Rastreios só como referência de como as coisas foram montadas.
 
 ---
 
@@ -94,22 +94,27 @@ Suave e minimalista, com fundo creme, verde-oliva como cor principal e dourado n
 
 ---
 
-## 3. Infraestrutura compartilhada
+## 3. Infraestrutura: independente, usando o Rastreios como referência
 
-| Peça | Detalhe |
+O MindApp deve ter a **sua própria infraestrutura**, sem mexer na do Psique Rastreios:
+
+| Peça | No MindApp |
 |---|---|
-| **Supabase** | Projeto `apdmcrstwrgfoyglmjwu` (https://apdmcrstwrgfoyglmjwu.supabase.co). Chave pública: `sb_publishable_88sPv20T9csLi-8biKBpwQ_RnmvOqP1` |
-| **Tabelas** | `assinaturas` (por e-mail), `perfis` (nome, CRP, WhatsApp, bloqueado), `eventos_kiwify` (dados mínimos) |
-| **Login** | E-mail e senha, com nome completo e CRP obrigatórios. Saída automática após 30 minutos sem uso |
-| **E-mails** | Brevo, via SMTP no Supabase. Remetente: "Psique Rastreios" <psiqueferramentas@gmail.com> |
-| **Vendas** | Kiwify. A função `kiwify-webhook` no Supabase libera e bloqueia o acesso conforme os avisos |
-| **Hospedagem** | GitHub Pages |
+| **Repositório (código)** | Novo, por exemplo `mindapp` |
+| **Banco de dados e login** | **Novo projeto no Supabase**, separado do projeto do Rastreios |
+| **Vendas** | Novo produto na Kiwify, com o próprio checkout e o próprio aviso automático (webhook) |
+| **E-mails** | Pode usar a mesma conta do Brevo, com um remetente "MindApp" |
+| **Hospedagem** | Própria (GitHub Pages, ou outra mais adequada para um app com dados de pacientes) |
 
-### Decisões para integrar o MindApp
-- **Usar o mesmo projeto Supabase**, para o profissional ter **uma única conta** nos dois apps.
-- **Separar o acesso por produto:** adicionar uma coluna `produto` à tabela `assinaturas` (ou criar uma tabela `assinaturas_produtos`). A função `kiwify-webhook` deve usar o `product_id` da Kiwify para saber qual produto liberar. **Hoje a tabela é só por e-mail e serve ao Rastreios:** a mudança precisa manter o Rastreios funcionando.
-- **Envio de rastreios dentro do MindApp:** reaproveitar o formato de link do Rastreios (`?a=` com os dados codificados). O ideal é o MindApp abrir o link do Rastreios para quem assina os dois.
-- **A senha do banco, a chave SMTP e a chave do webhook nunca vão para o código nem para o chat.**
+**Referência de como o Rastreios foi montado** (para reaproveitar a solução, não as contas):
+- Supabase com login por e-mail e senha, nome completo e CRP obrigatórios, bloqueio de cadastros e saída automática após 30 minutos sem uso.
+- Tabela de assinaturas alimentada por uma função que recebe os avisos da Kiwify e guarda só os dados mínimos (LGPD).
+- Recuperação de senha por e-mail via Brevo (SMTP configurado no Supabase).
+- Os arquivos estão no repositório `psibarbaraserra-art/Ferramenta-psico-educacao`, nas pastas `supabase/` e `js/`.
+
+**Integração com o Rastreios: opcional e para o futuro.** Se um dia fizer sentido, o MindApp pode ter um botão que abre o Psique Rastreios para quem assina os dois. Isso não é necessário para lançar o MindApp e não deve ser feito sem decisão explícita.
+
+**Nunca** colocar no código ou no chat a senha do banco, as chaves secretas do Supabase, a chave SMTP ou a chave do webhook.
 
 ---
 
@@ -127,7 +132,7 @@ Suave e minimalista, com fundo creme, verde-oliva como cor principal e dourado n
 - Agendamento flexível (recorrências, encaixes, bloqueios de horário)
 - Financeiro (valores por sessão, pagamentos, pendências, relatórios)
 - Envio de atividades ao paciente
-- Envio de rastreios, integrado ao Psique Rastreios
+- Envio de rastreios ou questionários ao paciente (próprio do MindApp; integração com o Psique Rastreios é opcional)
 - Lembrete ao paciente com confirmação de presença
 
 Definir na nova conversa o que entra na primeira versão (o mínimo para vender) e o que fica para depois.
