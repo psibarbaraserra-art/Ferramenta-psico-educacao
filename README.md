@@ -75,3 +75,9 @@ No celular, abra o endereço e use "Adicionar à tela inicial" para instalar com
 
 ## Publicar uma atualização
 Ao mudar arquivos em `js/`, atualize o número de versão em três lugares: `versao` em `js/config.js` e os `?v=` dos scripts em `index.html` e `vendas.html`. Isso obriga os celulares, inclusive com o app instalado, a baixar os arquivos novos. A versão aparece no rodapé do app.
+
+## Cadastro de profissionais
+- O cadastro exige nome completo e CRP (validado no formato região/número, regiões 01 a 24).
+- Rode `supabase/02-crp-e-bloqueio.sql` uma vez para criar o bloqueio e as permissões por coluna.
+- Use `supabase/03-conferir-cadastros.sql` para listar os cadastros, conferir no Cadastro Nacional do CFP e bloquear ou desbloquear.
+- A sessão é encerrada após 30 minutos sem uso.

@@ -5,10 +5,11 @@ window.PSIQUE_CONFIG = {
   supabaseKey: 'sb_publishable_88sPv20T9csLi-8biKBpwQ_RnmvOqP1',
   checkoutUrl: 'https://pay.kiwify.com.br/mdAL7hc',
   preco: 'R$ 39,90 por mês',
-  responsavel: '',          // nome completo da responsável técnica (aparece nos Termos, na Política e na página de vendas)
+  responsavel: 'Ana Bárbara Serra Oliveira',   // nome da responsável técnica (Termos, Política e página de vendas)
   crp: '',                  // registro profissional, ex.: CRP 06/123456
-  contato: '',              // e-mail para suporte e para pedidos de privacidade
-  foro: '',                 // cidade/UF do foro dos Termos de Uso
+  contato: 'psibarbaraserra@gmail.com',       // e-mail de suporte e de pedidos de privacidade
+  telefone: '+55 (92) 98115-5631',           // WhatsApp de suporte
+  foro: 'Manaus/AM',                          // foro dos Termos de Uso
   termosVersao: '2026-11-20',
-  versao: '2026.11.20-3'   // ao publicar mudanças, atualize aqui e nos ?v= do index.html e do vendas.html
+  versao: '2026.11.20-4'   // ao publicar mudanças, atualize aqui e nos ?v= do index.html e do vendas.html
 };

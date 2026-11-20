@@ -271,10 +271,11 @@ function viewProfile(){
   return `${topbar('profile')}
   <section class="card stack">
     <h2>Meu perfil</h2>
-    <p class="muted small">Esses dados aparecem no convite enviado ao paciente e no relatório.</p>
+    ${LIVE && (!pro.name || !normCRP(pro.crp)) ? '<div class="banner"><span>Para usar o app, informe seu nome completo e seu CRP.</span></div>' : ''}
+    <p class="muted small">Esses dados aparecem no convite enviado ao paciente, no relatório e na carta de encaminhamento.</p>
     <form id="pf" class="stack">
-      <label class="f" for="f-name">Nome profissional<input class="input" id="f-name" required value="${esc(pro.demo?'':pro.name)}" placeholder="Ex.: Psicóloga Ana Lima"></label>
-      <label class="f" for="f-crp">Registro<input class="input" id="f-crp" value="${esc(pro.demo?'':pro.crp)}" placeholder="CRP 00/00000"></label>
+      <label class="f" for="f-name">Nome completo<input class="input" id="f-name" required value="${esc(pro.demo?'':pro.name)}" placeholder="Ex.: Psicóloga Ana Lima"></label>
+      <label class="f" for="f-crp">CRP<input class="input" id="f-crp" ${LIVE ? 'required' : ''} value="${esc(pro.demo?'':pro.crp)}" placeholder="Ex.: 06/123456"></label>
       <label class="f" for="f-wa">WhatsApp para receber as respostas<input class="input" id="f-wa" inputmode="tel" value="${esc(pro.wa)}" placeholder="(11) 90000-0000"></label>
       ${LIVE ? '' : `<label class="f" for="f-email">E-mail<input class="input" id="f-email" type="email" value="${esc(pro.email)}" placeholder="voce@email.com"></label>`}
       <button class="btn primary" type="submit">Salvar perfil</button>
@@ -431,6 +432,30 @@ function viewPatientDone(){
   ${patient.sim ? `<button class="btn ghost block no-print" id="seeAsPro">Demonstração: abrir o relatório como profissional</button>` : ''}`;
 }
 
+/* ---------- CRP e inatividade ---------- */
+function normCRP(v){
+  const m = String(v || '').match(/(\d{1,2})\s*[\/\-.]?\s*(\d{3,6})/);
+  if (!m) return null;
+  const reg = parseInt(m[1], 10);
+  if (reg < 1 || reg > 24) return null;
+  return `CRP ${String(reg).padStart(2,'0')}/${m[2]}`;
+}
+const IDLE_MS = 30 * 60 * 1000;
+function touch(){ store.set('ultimo', Date.now()); }
+async function idleCheck(){
+  if (!LIVE || !user) return;
+  const last = store.get('ultimo', 0);
+  if (last && Date.now() - last > IDLE_MS) {
+    await sb.auth.signOut(); user = null; sub = null;
+    go('login', {msg:'Sua sessão foi encerrada após 30 minutos sem uso. Entre de novo.'});
+  }
+}
+if (LIVE) {
+  ['click','keydown','touchstart','scroll'].forEach(ev => window.addEventListener(ev, () => { if (user) touch(); }, {passive:true}));
+  setInterval(idleCheck, 60 * 1000);
+  document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'visible') idleCheck(); });
+}
+
 /* ---------- Conta e assinatura ---------- */
 function planPill(){
   if (!LIVE) return '<span class="pill gold">Demonstração</span>';
@@ -462,6 +487,8 @@ function viewLogin(){
     <form id="lf" class="stack">
       <label class="f" for="l-email">E-mail<input class="input" id="l-email" type="email" required autocomplete="email" value="${esc(S.email||'')}"></label>
       <label class="f" for="l-pass">Senha<input class="input" id="l-pass" type="password" required minlength="6" autocomplete="${signup ? 'new-password' : 'current-password'}"></label>
+      ${signup ? `<label class="f" for="l-name">Nome completo<input class="input" id="l-name" required autocomplete="name" placeholder="Como aparece no seu registro"></label>
+      <label class="f" for="l-crp">CRP<input class="input" id="l-crp" required placeholder="Ex.: 06/123456" inputmode="text"></label>` : ''}
       ${signup ? `<label class="check" for="l-terms"><input type="checkbox" id="l-terms" required> <span>Sou profissional de saúde habilitado(a) e li e aceito os <a href="termos.html" target="_blank" rel="noopener">Termos de Uso</a> e a <a href="privacidade.html" target="_blank" rel="noopener">Política de Privacidade</a>.</span></label>` : ''}
       <button class="btn primary" type="submit">${signup ? 'Criar minha conta' : 'Entrar'}</button>
     </form>
@@ -482,6 +509,12 @@ function viewNoAccess(){
     ${CFG.checkoutUrl ? `<a class="btn primary block" href="${esc(CFG.checkoutUrl)}" target="_blank" rel="noopener">Assinar por ${esc(CFG.preco || '')}</a>` : ''}
     <button class="btn soft block" id="recheck">Verificar de novo</button>
     <button class="btn ghost block" id="logout">Sair e entrar com outro e-mail</button>`);
+}
+function viewBlocked(){
+  return shell(`<h3>Cadastro não confirmado</h3>
+    <p>Não foi possível confirmar o registro profissional informado nesta conta. O acesso fica suspenso até a regularização.</p>
+    <p class="small muted">Se acredita que houve um engano, escreva para ${esc(CFG.contato || 'o suporte')} informando seu nome completo e CRP.</p>
+    <button class="btn ghost block" id="logout">Sair da conta</button>`);
 }
 function viewNewPass(){
   return shell(`<h3>Criar nova senha</h3>
@@ -507,21 +540,23 @@ async function loadAccount(){
   ]);
   accErr = ea ? ea.message : '';
   sub = a || null;
-  pro = p ? {name:p.nome || '', crp:p.crp || '', wa:p.whatsapp || ''} : {name:'', crp:'', wa:''};
+  pro = p ? {name:p.nome || '', crp:p.crp || '', wa:p.whatsapp || '', bloqueado:!!p.bloqueado} : {name:'', crp:'', wa:''};
 }
 const PRO_VIEWS = ['home','results','tool','profile','report'];
 function gate(){
   if (!LIVE || !PRO_VIEWS.includes(S.view)) return null;
   if (!user) return 'login';
+  if (pro.bloqueado) return 'blocked';
   if (!ativa(sub)) return 'noAccess';
+  if ((!pro.name || !normCRP(pro.crp)) && S.view !== 'profile') return 'profile';
   return null;
 }
 
 /* ---------- Render ---------- */
-const VIEWS = {login:viewLogin, noAccess:viewNoAccess, newPass:viewNewPass, home:viewHome, results:viewResults, tool:viewTool, profile:viewProfile, report:viewReport, pIntro:viewPatientIntro, pQ:viewQuestion, pDone:viewPatientDone};
+const VIEWS = {blocked:viewBlocked, login:viewLogin, noAccess:viewNoAccess, newPass:viewNewPass, home:viewHome, results:viewResults, tool:viewTool, profile:viewProfile, report:viewReport, pIntro:viewPatientIntro, pQ:viewQuestion, pDone:viewPatientDone};
 function render(){
   const g = gate();
-  if (g) S = {view:g, mode:S.mode, email:S.email, msg:S.msg};
+  if (g) S = {view:g, mode:S.mode, email:S.email, msg:S.msg, need:g === 'profile'};
   $('#app').innerHTML = (VIEWS[S.view] || viewHome)(); bind();
 }
 function startPatient(ctx){ patient = {...ctx, a:Array(SCALES[ctx.s].items.length).fill(null), t:Date.now()}; go('pIntro'); }
@@ -580,7 +615,9 @@ function bind(){
   const pf = $('#pf');
   if (pf) pf.onsubmit = e => {
     e.preventDefault();
-    pro = {name:$('#f-name').value.trim(), crp:$('#f-crp').value.trim(), wa:$('#f-wa').value.trim(), email:($('#f-email') ? $('#f-email').value.trim() : '')};
+    const crpOk = normCRP($('#f-crp').value);
+    if (LIVE && !crpOk) { toast('CRP inválido. Use o formato 06/123456'); $('#f-crp').focus(); return; }
+    pro = {name:$('#f-name').value.trim(), crp:crpOk || $('#f-crp').value.trim(), wa:$('#f-wa').value.trim(), email:($('#f-email') ? $('#f-email').value.trim() : '')};
     if (LIVE) {
       sb.from('perfis').upsert({id:user.id, nome:pro.name, crp:pro.crp, whatsapp:pro.wa, atualizado_em:new Date().toISOString()})
         .then(({error}) => { if (error) toast('Não foi possível salvar o perfil'); else { toast('Perfil salvo'); go('home'); } });
@@ -605,13 +642,21 @@ function bind(){
         if (error) return msg(ERR(error.message));
         return msg('Se houver uma conta com este e-mail, você vai receber um link para criar uma nova senha.');
       }
-      if (S.mode === 'signup' && !($('#l-terms') && $('#l-terms').checked)) return msg('Para criar a conta, confirme que aceita os Termos de Uso e a Política de Privacidade.');
+      let nome = '', crp = '';
+      if (S.mode === 'signup') {
+        nome = ($('#l-name').value || '').trim(); crp = normCRP($('#l-crp').value);
+        if (nome.split(/\s+/).length < 2) return msg('Digite seu nome completo, como aparece no registro profissional.');
+        if (!crp) return msg('CRP inválido. Use o formato região/número, por exemplo 06/123456.');
+        if (!($('#l-terms') && $('#l-terms').checked)) return msg('Para criar a conta, confirme que aceita os Termos de Uso e a Política de Privacidade.');
+      }
       const {data, error} = S.mode === 'signup'
-        ? await sb.auth.signUp({email, password:pass, options:{data:{aceite_termos:new Date().toISOString(), versao_termos:CFG.termosVersao || ''}}})
+        ? await sb.auth.signUp({email, password:pass, options:{data:{nome, crp, aceite_termos:new Date().toISOString(), versao_termos:CFG.termosVersao || ''}}})
         : await sb.auth.signInWithPassword({email, password:pass});
       if (error) return msg(ERR(error.message));
       if (!data.session) return msg('Conta criada. Confirme seu e-mail pelo link que enviamos e depois entre.');
-      user = data.session.user; await loadAccount(); afterLogin();
+      user = data.session.user; touch();
+      if (S.mode === 'signup') await sb.from('perfis').upsert({id:user.id, nome, crp, atualizado_em:new Date().toISOString()});
+      await loadAccount(); afterLogin();
     } catch(err){ msg(ERR(String(err && err.message || err))); }
   };
   const rc = $('#recheck'); if (rc) rc.onclick = async () => { rc.disabled = true; await loadAccount(); if (ativa(sub)) afterLogin(); else { toast(accErr ? 'Erro ao verificar: ' + accErr : 'Ainda não encontramos a assinatura'); rc.disabled = false; } };
@@ -653,6 +698,9 @@ function openResult(r){
       const {data} = await sb.auth.getSession();
       user = data.session ? data.session.user : null;
       if (S.view === 'newPass') return;
+      const last = store.get('ultimo', 0);
+      if (user && !RECOVERY && last && Date.now() - last > IDLE_MS) { await sb.auth.signOut(); user = null; go('login', {msg:'Sua sessão foi encerrada após 30 minutos sem uso. Entre de novo.'}); return; }
+      if (user) touch();
       if (RECOVERY && user) { try { history.replaceState(null, '', location.pathname); } catch(e){} await loadAccount(); go('newPass'); return; }
       if (user) { await loadAccount(); if (ativa(sub)) return afterLogin(); }
     } catch(e){}
