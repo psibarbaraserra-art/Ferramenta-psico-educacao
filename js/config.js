@@ -3,6 +3,6 @@
 window.PSIQUE_CONFIG = {
   supabaseUrl: 'https://apdmcrstwrgfoyglmjwu.supabase.co',
   supabaseKey: 'sb_publishable_88sPv20T9csLi-8biKBpwQ_RnmvOqP1',
-  checkoutUrl: '',          // link de checkout da Kiwify (preencher quando o produto for criado)
+  checkoutUrl: 'https://pay.kiwify.com.br/mdAL7hc',
   preco: 'R$ 39,90 por mês'
 };
