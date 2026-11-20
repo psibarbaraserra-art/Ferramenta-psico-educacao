@@ -434,7 +434,7 @@ function viewPatientDone(){
 
 /* ---------- CRP e inatividade ---------- */
 function normCRP(v){
-  const m = String(v || '').match(/(\d{1,2})\s*[\/\-.]?\s*(\d{3,6})/);
+  const m = String(v || '').replace(/(\d)\.(\d)/g, '$1$2').match(/(\d{1,2})\s*[\/\-.]?\s*(\d{3,6})/);
   if (!m) return null;
   const reg = parseInt(m[1], 10);
   if (reg < 1 || reg > 24) return null;
