@@ -60,7 +60,7 @@ const SUP = (window.PSI && window.PSI.support) || {
   suicide:'Se você estiver pensando em se machucar ou em tirar a própria vida, procure ajuda agora: CVV 188 (gratuito, 24h) ou SAMU 192.',
   violence:'Se você estiver em situação de violência: Ligue 180, Disque 100 ou 190 em caso de emergência.'
 };
-const ORDER = Object.keys(SCALES);
+const ORDER = Object.keys(SCALES).filter(id => !SCALES[id].hidden);
 const catIcon = s => s.icon || (CATS.find(c => c.id === s.cats[0]) || {}).icon;
 const EMOJI = {
   phq9:'🌧️', gad7:'🌀', phqpanic:'💓', dass21:'⚖️', asq:'🛟', epds:'🤱', pcl5:'🛡️', pcptsd5:'🔔', itq:'🧱', ace:'🧷', audit:'🍷', scoff:'🍽️', phq15:'🩺', asrs:'🎯', snap:'🧒', burnout:'🔥',

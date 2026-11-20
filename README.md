@@ -10,7 +10,9 @@ Aplicativo web independente para psicólogos(as) aplicarem rastreios, enviarem p
 
 Não há servidor nesta versão: os dados ficam no link e no aparelho de quem abre.
 
-## Biblioteca (75 rastreios em 9 categorias)
+## Biblioteca (71 instrumentos visíveis em 9 categorias)
+
+AUDIT, EPDS, ASRS e SCOFF estão ocultas (`hidden:true` em `js/escalas-validadas.js`) até a confirmação da licença para uso comercial. Para reativar, basta remover essa linha.
 Ansiedade · Humor · Saúde materna e puerpério · Trauma · Estresse e burnout · Personalidade · Neurodesenvolvimento · Relacionamentos · Outros transtornos.
 
 ### Instrumentos validados (15)

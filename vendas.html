@@ -193,7 +193,7 @@ footer{border-top:1px solid var(--line);padding-block:32px 48px;font-size:.85rem
       <div class="cat"><div class="top2"><h3>Humor</h3></div><p>Depressão, distimia, desesperança, risco de suicídio e espectro bipolar.</p></div>
       <div class="cat"><div class="top2"><h3>Saúde materna</h3></div><p>Depressão pós-parto, baby blues, culpa materna e vínculo mãe-bebê.</p></div>
     </div>
-    <div class="legend"><span><b data-val>15</b> instrumentos validados de uso livre, como PHQ-9, GAD-7, DASS-21, PCL-5 e AUDIT</span><span><b data-auth>60</b> rastreios de triagem Psique, construídos a partir do DSM-5-TR e da CID-11</span></div>
+    <div class="legend"><span><b data-val>15</b> instrumentos validados de uso livre, como PHQ-9, GAD-7, DASS-21 e PCL-5</span><span><b data-auth>60</b> rastreios de triagem Psique, construídos a partir do DSM-5-TR e da CID-11</span></div>
   </section>
 
   <section class="block">
@@ -256,7 +256,7 @@ footer{border-top:1px solid var(--line);padding-block:32px 48px;font-size:.85rem
     <div class="head"><p class="eyebrow">Dúvidas</p><h2>Perguntas frequentes</h2></div>
     <details><summary>Preciso instalar algum aplicativo?</summary><p>Não. O Psique funciona no navegador. Se quiser, você pode adicioná-lo à tela inicial do celular e usá-lo como um aplicativo.</p></details>
     <details><summary>O paciente precisa criar conta?</summary><p>Não. Ele recebe o link, responde e envia as respostas para você pelo WhatsApp, sem cadastro.</p></details>
-    <details><summary>Quais instrumentos são validados?</summary><p>PHQ-9, GAD-7, PHQ-15, módulo de pânico do PHQ, DASS-21, ASQ, PCL-5, PC-PTSD-5, ITQ, ACE, AUDIT, SCOFF, SNAP-IV, ASRS e EPDS. Os demais são rastreios de triagem Psique, construídos a partir dos critérios do DSM-5-TR e da CID-11 para levantar hipóteses e orientar encaminhamentos.</p></details>
+    <details><summary>Quais instrumentos são validados?</summary><p>PHQ-9, GAD-7, PHQ-15, módulo de pânico do PHQ, DASS-21, ASQ, PCL-5, PC-PTSD-5, ITQ, ACE e SNAP-IV. Os demais são rastreios de triagem Psique, construídos a partir dos critérios do DSM-5-TR e da CID-11 para levantar hipóteses e orientar encaminhamentos.</p></details>
     <details><summary>O resultado é um diagnóstico?</summary><p>Não. Os rastreios ajudam a identificar sinais e orientar a conversa clínica. A avaliação e o diagnóstico continuam sendo responsabilidade do profissional.</p></details>
     <details><summary>Onde ficam os dados dos pacientes?</summary><p>As respostas viajam dentro do link que o paciente envia para você e ficam salvas apenas no aparelho onde você abre o resultado. Nenhum dado de paciente é guardado em servidor.</p></details>
     <details><summary>Como cancelo a assinatura?</summary><p>Pela sua conta na Kiwify, a qualquer momento. O acesso continua até o fim do período já pago.</p></details>
@@ -280,17 +280,17 @@ footer{border-top:1px solid var(--line);padding-block:32px 48px;font-size:.85rem
   });
   var S = (window.PSI && window.PSI.scales) || null;
   if (!S) return;
-  var ids = Object.keys(S), val = ids.filter(function(i){ return S[i].kind === 'validado'; }).length;
+  var ids = Object.keys(S).filter(function(i){ return !S[i].hidden; }), val = ids.filter(function(i){ return S[i].kind === 'validado'; }).length;
   var CATS = [
     ['ans','Ansiedade','Ansiedade generalizada, pânico, ansiedade social, fobias, saúde e desempenho.'],
     ['hum','Humor','Depressão, distimia, depressão sazonal, desesperança, risco de suicídio e espectro bipolar.'],
-    ['mat','Saúde materna','Depressão e ansiedade pós-parto, baby blues, sobrecarga, culpa e vínculo mãe-bebê.'],
+    ['mat','Saúde materna','Ansiedade pós-parto, baby blues, sobrecarga, culpa, vínculo mãe-bebê e puerpério.'],
     ['tra','Trauma','TEPT, TEPT complexo, experiências adversas na infância, violência e dissociação.'],
     ['bur','Estresse e burnout','Burnout ocupacional e parental, estresse crônico, fadiga por compaixão e equilíbrio.'],
     ['per','Personalidade','Traços borderline, narcisista, dependente, evitativo, antissocial e obsessivo.'],
-    ['neu','Neurodesenvolvimento','TDAH adulto e infantil, espectro autista, atenção, impulsividade e funções executivas.'],
+    ['neu','Neurodesenvolvimento','TDAH infantil, espectro autista, atenção, impulsividade e funções executivas.'],
     ['rel','Relacionamentos','Dependência emocional, ciúme, autoestima, limites, regulação emocional e codependência.'],
-    ['out','Outras condições','TOC, transtornos alimentares, insônia, luto, álcool, substâncias e somatização.']
+    ['out','Outras condições','TOC, compulsão alimentar, insônia, luto, uso de substâncias e somatização.']
   ];
   document.getElementById('cats').innerHTML = CATS.map(function(c){
     var n = ids.filter(function(i){ return S[i].cats.indexOf(c[0]) >= 0; }).length;

@@ -177,6 +177,7 @@ S.asq = {
 };
 
 S.epds = {
+  hidden:true, // aguardando confirmação de licença para uso comercial
   title:'Rastreio de Depressão Pós-parto', code:'EPDS (Edimburgo)', cats:['mat'], icon:'baby', minutes:3, kind:'validado',
   topics:['Depressão pós-parto','Sofrimento emocional durante a gestação'],
   about:'Escala de Depressão Pós-parto de Edimburgo, com dez perguntas sobre os últimos sete dias. Também pode ser usada durante a gestação.',
@@ -335,6 +336,7 @@ S.ace = {
 };
 
 S.audit = {
+  hidden:true, // aguardando confirmação de licença para uso comercial
   title:'Rastreio de Uso de Álcool', code:'AUDIT (OMS)', cats:['out'], icon:'cup', minutes:3, kind:'validado',
   topics:['Uso abusivo de álcool'],
   about:'Teste de Identificação de Problemas Relacionados ao Uso de Álcool, da Organização Mundial da Saúde. Dez perguntas sobre consumo, dependência e consequências.',
@@ -366,6 +368,7 @@ S.audit = {
 };
 
 S.scoff = {
+  hidden:true, // aguardando confirmação de licença para uso comercial
   title:'Rastreio de Transtornos Alimentares', code:'SCOFF', cats:['out'], icon:'leaf', minutes:1, kind:'validado',
   topics:['Transtornos alimentares','Anorexia e bulimia'],
   about:'Cinco perguntas rápidas de triagem para anorexia e bulimia nervosa.',
@@ -402,6 +405,7 @@ S.phq15 = {
 };
 
 S.asrs = {
+  hidden:true, // aguardando confirmação de licença para uso comercial
   title:'Rastreio de TDAH em Adultos', code:'ASRS-18 · Parte A', cats:['neu'], icon:'focus', minutes:2, kind:'validado',
   topics:['TDAH em adultos'],
   about:'As seis perguntas de triagem da escala de autorrelato da OMS para TDAH em adultos. Um resultado sugestivo indica a necessidade de avaliação completa, e não um diagnóstico.',
