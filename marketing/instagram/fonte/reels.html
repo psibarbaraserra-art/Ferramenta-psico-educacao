@@ -1,0 +1,149 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Manrope:wght@400;500;600;700;800&display=swap">
+<style>
+:root{--bg:#F6F2E9;--surface:#FFFDF8;--line:#E4DCCB;--ink:#2F3326;--muted:#6E7165;--olive:#6B7A4B;--deep:#4F5B36;--soft:#E7EADB;--gold:#B08D4F;--goldsoft:#F1E6CF;--t0:#7F9461;--t1:#C3A257;--t2:#C2875A;--t3:#A85E57}
+html,body{margin:0;width:1080px;height:1920px;overflow:hidden;background:var(--bg)}
+body{font-family:Manrope,sans-serif;color:var(--ink)}
+.bgblob{position:absolute;border-radius:50%;filter:blur(2px)}
+.scene{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;padding:0 110px;gap:44px;opacity:0}
+.eyebrow{font-size:30px;letter-spacing:.22em;text-transform:uppercase;color:var(--gold);font-weight:800}
+.big{font-family:"Cormorant Garamond",serif;font-weight:600;font-size:118px;line-height:1.02;color:var(--deep)}
+.mid{font-family:"Cormorant Garamond",serif;font-weight:600;font-size:92px;line-height:1.05;color:var(--deep)}
+.it{font-style:italic;color:var(--gold)}
+.list{display:flex;flex-direction:column;gap:34px}
+.li{display:flex;align-items:center;gap:30px;font-size:52px;font-weight:600;background:var(--surface);border:2px solid var(--line);border-radius:30px;padding:34px 40px}
+.x{width:64px;height:64px;border-radius:50%;background:#F3DFDB;color:var(--t3);display:grid;place-items:center;font-size:40px;font-weight:800;flex:none}
+.phone{align-self:center;width:640px;background:var(--surface);border:3px solid var(--line);border-radius:72px;padding:30px;box-shadow:0 30px 80px rgba(60,55,30,.14)}
+.screen{background:var(--bg);border-radius:50px;padding:44px 36px;display:flex;flex-direction:column;gap:26px;min-height:640px}
+.bubble{align-self:flex-end;max-width:86%;background:#DCEBCB;border-radius:30px 30px 8px 30px;padding:26px 30px;font-size:30px;line-height:1.35}
+.bubble b{color:#3a6b2a}
+.bubble.in{align-self:flex-start;background:#fff;border-radius:30px 30px 30px 8px}
+.chip{display:inline-block;margin-top:14px;font-size:26px;background:#fff;border-radius:16px;padding:12px 18px;color:var(--deep);font-weight:700}
+.q{font-family:"Cormorant Garamond",serif;font-size:50px;line-height:1.15}
+.small{font-size:26px;color:var(--muted)}
+.opt{display:flex;align-items:center;gap:20px;padding:26px 26px;border:2px solid var(--line);border-radius:24px;background:var(--surface);font-size:30px;font-weight:600}
+.opt .r{width:30px;height:30px;border-radius:50%;border:3px solid var(--line);flex:none}
+.opt.on{border-color:var(--olive);background:var(--soft)}
+.opt.on .r{border-color:var(--olive);background:radial-gradient(circle,var(--olive) 45%,transparent 50%)}
+.bar{height:10px;background:var(--line);border-radius:6px;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--olive)}
+.report{background:var(--surface);border:3px solid var(--line);border-radius:48px;padding:56px 54px;display:flex;flex-direction:column;gap:30px;box-shadow:0 30px 80px rgba(60,55,30,.12)}
+.score{display:flex;align-items:flex-end;justify-content:space-between}
+.score b{font-family:"Cormorant Garamond",serif;font-size:150px;line-height:.9}
+.lvl{font-family:"Cormorant Garamond",serif;font-size:58px;font-weight:600;color:var(--t2)}
+.seg{position:relative;display:flex;gap:6px;height:20px;margin-top:20px}
+.seg span{border-radius:6px;opacity:.85}
+.mk{position:absolute;top:-22px;width:6px;height:64px;background:var(--ink);border-radius:4px}
+.row{border-top:2px solid var(--line);padding-top:24px;display:flex;flex-direction:column;gap:8px}
+.row .k{font-size:26px;color:var(--muted);font-weight:700;letter-spacing:.06em;text-transform:uppercase}
+.row .v{font-size:38px;font-weight:700}
+.logo{align-self:center}
+.cta{align-self:center;text-align:center;display:flex;flex-direction:column;gap:30px;align-items:center}
+.pills{display:flex;gap:18px;flex-wrap:wrap;justify-content:center}
+.pill{font-size:34px;font-weight:800;padding:18px 32px;border-radius:999px;background:var(--soft);color:var(--deep)}
+.pill.g{background:var(--goldsoft);color:#8E6F38}
+.price{font-family:"Cormorant Garamond",serif;font-size:120px;font-weight:600;color:var(--deep);line-height:1}
+.price small{font-family:Manrope;font-size:40px;color:var(--muted);font-weight:600}
+.btn{background:var(--olive);color:#FFFDF8;font-size:46px;font-weight:800;padding:34px 70px;border-radius:30px}
+.foot{position:absolute;left:110px;right:110px;bottom:330px;text-align:center;font-size:26px;color:var(--muted);line-height:1.5}
+</style></head><body>
+<div class="bgblob" style="width:900px;height:900px;left:-380px;top:-360px;background:radial-gradient(circle,#E7EADB,transparent 70%)"></div>
+<div class="bgblob" style="width:1100px;height:1100px;right:-480px;bottom:-460px;background:radial-gradient(circle,#F1E6CF,transparent 70%)"></div>
+
+<section class="scene" id="s1">
+  <div class="eyebrow a">Para psicólogas e psicólogos</div>
+  <div class="big a">Um atendimento mais funcional <span class="it">começa antes</span> da sessão.</div>
+</section>
+
+<section class="scene" id="s2">
+  <div class="mid a">Quanto da sua sessão ainda vai para o papel?</div>
+  <div class="list">
+    <div class="li a"><span class="x">✕</span>Escalas impressas</div>
+    <div class="li a"><span class="x">✕</span>Correção manual da pontuação</div>
+    <div class="li a"><span class="x">✕</span>Minutos da sessão longe da escuta</div>
+  </div>
+</section>
+
+<section class="scene" id="s3">
+  <div class="eyebrow a">1 · Envie</div>
+  <div class="mid a">Escolha o rastreio e envie o link pelo WhatsApp.</div>
+  <div class="phone a"><div class="screen">
+    <div class="small" style="align-self:center">Hoje</div>
+    <div class="bubble a">Olá, Maria! Separei um questionário rápido para conhecermos melhor como você tem se sentido. Leva cerca de 3 minutos.<br><span class="chip">🔗 Rastreio de Ansiedade</span></div>
+    <div class="bubble in a">Respondi! Acabei de enviar minhas respostas 💚</div>
+  </div></div>
+</section>
+
+<section class="scene" id="s4">
+  <div class="eyebrow a">2 · O paciente responde</div>
+  <div class="mid a">No celular, no tempo dele, uma pergunta por tela.</div>
+  <div class="phone a"><div class="screen">
+    <div style="display:flex;justify-content:space-between" class="small"><span>‹ Anterior</span><span id="qn">3 de 7</span></div>
+    <div class="bar"><i id="qbar" style="width:30%"></i></div>
+    <div class="small">Nas últimas 2 semanas, com que frequência você foi incomodado(a) por:</div>
+    <div class="q">Preocupar-se muito com diversas coisas</div>
+    <div class="opt" id="o0"><span class="r"></span>Nenhuma vez</div>
+    <div class="opt" id="o1"><span class="r"></span>Vários dias</div>
+    <div class="opt" id="o2"><span class="r"></span>Mais da metade dos dias</div>
+    <div class="opt" id="o3"><span class="r"></span>Quase todos os dias</div>
+  </div></div>
+</section>
+
+<section class="scene" id="s5">
+  <div class="eyebrow a">3 · Você recebe o relatório</div>
+  <div class="report a">
+    <div class="small" style="font-weight:700;letter-spacing:.12em;color:var(--gold);text-transform:uppercase">Rastreio de Ansiedade Generalizada · GAD-7</div>
+    <div class="score"><div><b id="num">0</b> <span class="small">de 21 pontos</span></div><span class="lvl" id="lvl">Ansiedade moderada</span></div>
+    <div class="seg"><span style="flex:5;background:var(--t0)"></span><span style="flex:5;background:var(--t1)"></span><span style="flex:5;background:var(--t2)"></span><span style="flex:7;background:var(--t3)"></span><i class="mk" id="mk" style="left:0"></i></div>
+    <div class="row a"><span class="k">Hipótese a investigar</span><span class="v">Ansiedade generalizada</span></div>
+    <div class="row a"><span class="k">Encaminhamento sugerido</span><span class="v">Psiquiatria e psicoterapia (TCC)</span></div>
+    <div class="row a"><span class="k">Carta de encaminhamento</span><span class="v">Pronta para copiar ✓</span></div>
+  </div>
+</section>
+
+<section class="scene" id="s6">
+  <div class="big a">E a sessão fica para o que importa:</div>
+  <div class="big a"><span class="it">a escuta e o vínculo.</span></div>
+</section>
+
+<section class="scene" id="s7">
+  <svg class="logo a" width="200" height="200" viewBox="0 0 48 48" fill="none"><circle cx="24" cy="24" r="22.5" stroke="#6B7A4B" stroke-opacity=".4" stroke-width=".8"/><g stroke="#B08D4F" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M24 11v26"/><path d="M14.5 15.5v4.5a9.5 9.5 0 0 0 19 0v-4.5"/><path d="M19 37h10"/></g></svg>
+  <div class="cta">
+    <div class="big a" style="font-size:112px">Psique Rastreios</div>
+    <div class="pills a"><span class="pill">74 instrumentos</span><span class="pill">9 áreas clínicas</span><span class="pill g">Relatório pronto</span></div>
+    <div class="price a">R$ 39,90 <small>por mês</small></div>
+    <div class="btn a">Link na bio</div>
+  </div>
+  <div class="foot a">Rastreio não é diagnóstico: apoia a formulação de hipóteses e o encaminhamento.<br>Ana Bárbara Serra Oliveira · CRP 20/13.134</div>
+</section>
+
+<script>
+const SC = [['s1',0,4.2],['s2',4,9.2],['s3',9,14.2],['s4',14,19.6],['s5',19.4,25.6],['s6',25.4,29.6],['s7',29.4,36]];
+const ease = x => x<0?0:x>1?1:x*x*(3-2*x);
+window.DURATION = 36;
+window.frame = function(t){
+  for (const [id,a,b] of SC){
+    const el = document.getElementById(id);
+    const vis = ease((t-a)/0.5) * (1 - ease((t-(b-0.5))/0.5));
+    el.style.opacity = vis;
+    el.querySelectorAll('.a').forEach((c,i) => {
+      const p = ease((t - a - 0.15 - i*0.22)/0.55);
+      c.style.opacity = p; c.style.transform = `translateY(${(1-p)*40}px)`;
+    });
+  }
+  // cena 4: opção marcada e progresso
+  const s4 = t - 14;
+  ['o0','o1','o2','o3'].forEach((o,k) => document.getElementById(o).classList.toggle('on', s4 > 2.6 && k === 2));
+  document.getElementById('qbar').style.width = (s4 > 3.3 ? 43 : 29) + '%';
+  document.getElementById('qn').textContent = s4 > 3.3 ? '4 de 7' : '3 de 7';
+  // cena 5: contagem e marcador
+  const s5 = ease((t - 20.2)/1.6);
+  const val = Math.round(12 * s5);
+  document.getElementById('num').textContent = val;
+  document.getElementById('mk').style.left = ((val + .5)/22*100) + '%';
+  document.getElementById('lvl').style.opacity = ease((t-21.6)/0.4);
+};
+window.frame(0);
+</script>
+</body></html>

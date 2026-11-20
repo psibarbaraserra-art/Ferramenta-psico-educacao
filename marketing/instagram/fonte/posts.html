@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500&family=Manrope:wght@400;500;600;700;800&display=swap">
+<style>
+:root{--bg:#F6F2E9;--surface:#FFFDF8;--line:#E4DCCB;--ink:#2F3326;--muted:#6E7165;--olive:#6B7A4B;--deep:#4F5B36;--soft:#E7EADB;--gold:#B08D4F;--goldsoft:#F1E6CF;--t2:#C2875A;--t3:#A85E57}
+html,body{margin:0;background:var(--bg)}
+body{font-family:Manrope,sans-serif;color:var(--ink)}
+.card{position:relative;overflow:hidden;background:var(--bg);display:flex;flex-direction:column;justify-content:center;gap:40px;padding:0 100px;box-sizing:border-box}
+.card.feed{width:1080px;height:1350px}
+.card.story{width:1080px;height:1920px;padding:0 100px}
+.blob{position:absolute;border-radius:50%;pointer-events:none}
+.eyebrow{font-size:28px;letter-spacing:.22em;text-transform:uppercase;color:var(--gold);font-weight:800;position:relative}
+.big{font-family:"Cormorant Garamond",serif;font-weight:600;font-size:104px;line-height:1.03;color:var(--deep);position:relative}
+.mid{font-family:"Cormorant Garamond",serif;font-weight:600;font-size:84px;line-height:1.05;color:var(--deep);position:relative}
+.it{font-style:italic;color:var(--gold)}
+.lead{font-size:38px;line-height:1.5;color:var(--muted);position:relative}
+.page{position:absolute;right:70px;bottom:60px;font-size:26px;font-weight:700;color:var(--muted)}
+.brand{position:absolute;left:100px;bottom:56px;display:flex;align-items:center;gap:14px;font-family:"Cormorant Garamond",serif;font-size:38px;font-weight:600;color:var(--deep)}
+.swipe{position:relative;font-size:32px;font-weight:700;color:var(--olive)}
+.list{display:flex;flex-direction:column;gap:26px;position:relative}
+.li{display:flex;align-items:center;gap:26px;font-size:44px;font-weight:600;background:var(--surface);border:2px solid var(--line);border-radius:28px;padding:30px 36px}
+.x{width:58px;height:58px;border-radius:50%;background:#F3DFDB;color:var(--t3);display:grid;place-items:center;font-size:34px;font-weight:800;flex:none}
+.ok{width:52px;height:52px;border-radius:50%;background:var(--soft);color:var(--olive);display:grid;place-items:center;font-size:30px;font-weight:800;flex:none}
+.check{display:flex;flex-direction:column;gap:24px;position:relative}
+.check div{display:flex;gap:24px;align-items:center;font-size:40px;font-weight:600}
+.steps{display:flex;flex-direction:column;gap:34px;position:relative}
+.step{display:flex;gap:34px;align-items:flex-start}
+.step .n{font-family:"Cormorant Garamond",serif;font-size:110px;line-height:.8;color:var(--gold);width:80px;flex:none}
+.step h3{margin:0;font-family:"Cormorant Garamond",serif;font-size:58px;color:var(--deep)}
+.step p{margin:8px 0 0;font-size:34px;line-height:1.45;color:var(--muted)}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;position:relative}
+.cat{background:var(--surface);border:2px solid var(--line);border-radius:26px;padding:26px 22px;display:flex;flex-direction:column;gap:12px}
+.cat .e{font-size:52px}
+.cat b{font-family:"Cormorant Garamond",serif;font-size:38px;line-height:1.1;color:var(--deep)}
+.cat span{font-size:26px;color:var(--muted);font-weight:700}
+.eth{display:grid;grid-template-columns:1fr 1fr;gap:28px 40px;position:relative}
+.eth div{border-left:4px solid var(--gold);padding-left:24px}
+.eth h3{margin:0 0 8px;font-family:"Cormorant Garamond",serif;font-size:50px;color:var(--deep)}
+.eth p{margin:0;font-size:31px;line-height:1.45;color:var(--muted)}
+.cta{display:flex;flex-direction:column;align-items:center;text-align:center;gap:30px;position:relative}
+.price{font-family:"Cormorant Garamond",serif;font-size:130px;font-weight:600;color:var(--deep);line-height:1}
+.price small{font-family:Manrope;font-size:40px;color:var(--muted);font-weight:600}
+.btn{background:var(--olive);color:#FFFDF8;font-size:44px;font-weight:800;padding:32px 64px;border-radius:28px}
+.pills{display:flex;gap:16px;flex-wrap:wrap;justify-content:center}
+.pill{font-size:32px;font-weight:800;padding:16px 28px;border-radius:999px;background:var(--soft);color:var(--deep)}
+.pill.g{background:var(--goldsoft);color:#8E6F38}
+.fine{font-size:26px;color:var(--muted);line-height:1.5;text-align:center}
+.report{background:var(--surface);border:3px solid var(--line);border-radius:44px;padding:50px;display:flex;flex-direction:column;gap:26px;position:relative;box-shadow:0 30px 80px rgba(60,55,30,.12)}
+.report .s{display:flex;justify-content:space-between;align-items:flex-end}
+.report b.n{font-family:"Cormorant Garamond",serif;font-size:130px;line-height:.9}
+.report .lvl{font-family:"Cormorant Garamond",serif;font-size:52px;font-weight:600;color:var(--t2)}
+.seg{display:flex;gap:6px;height:18px}.seg span{border-radius:6px;opacity:.85}
+.row{border-top:2px solid var(--line);padding-top:20px;font-size:34px;font-weight:700}
+.row small{display:block;font-size:24px;color:var(--muted);letter-spacing:.06em;text-transform:uppercase;margin-bottom:6px}
+.space{height:260px;border:3px dashed var(--line);border-radius:30px;display:grid;place-items:center;color:var(--muted);font-size:28px;position:relative}
+</style></head><body><div id="root"></div>
+<script>
+const LOGO = s => `<svg width="${s}" height="${s}" viewBox="0 0 48 48" fill="none"><circle cx="24" cy="24" r="22.5" stroke="#6B7A4B" stroke-opacity=".4" stroke-width=".9"/><g stroke="#B08D4F" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M24 11v26"/><path d="M14.5 15.5v4.5a9.5 9.5 0 0 0 19 0v-4.5"/><path d="M19 37h10"/></g></svg>`;
+const BLOBS = `<div class="blob" style="width:800px;height:800px;left:-340px;top:-320px;background:radial-gradient(circle,#E7EADB,transparent 70%)"></div><div class="blob" style="width:900px;height:900px;right:-380px;bottom:-380px;background:radial-gradient(circle,#F1E6CF,transparent 70%)"></div>`;
+const FOOTB = (i) => `<div class="brand">${LOGO(48)}Psique Rastreios</div>${i ? `<div class="page">${i}/7</div>` : ''}`;
+const FEED = [
+`<div class="eyebrow">Para psicólogas e psicólogos</div>
+ <div class="big">Seu paciente responde no celular. <span class="it">Você recebe o relatório pronto.</span></div>
+ <div class="swipe">Arraste para conhecer →</div>`,
+`<div class="mid">Quanto da sua sessão ainda vai para o papel?</div>
+ <div class="list"><div class="li"><span class="x">✕</span>Escalas impressas</div><div class="li"><span class="x">✕</span>Correção manual da pontuação</div><div class="li"><span class="x">✕</span>Tempo de sessão longe da escuta</div></div>
+ <div class="lead">Um atendimento mais funcional começa antes da sessão.</div>`,
+`<div class="eyebrow">Como funciona</div>
+ <div class="steps">
+  <div class="step"><span class="n">1</span><div><h3>Escolha e envie</h3><p>Escolha o rastreio e envie o link pelo WhatsApp, ou aplique na sessão.</p></div></div>
+  <div class="step"><span class="n">2</span><div><h3>O paciente responde</h3><p>No celular, uma pergunta por tela, sem cadastro e sem instalar nada.</p></div></div>
+  <div class="step"><span class="n">3</span><div><h3>Relatório pronto</h3><p>A pontuação é calculada na hora e o relatório chega para você.</p></div></div>
+ </div>`,
+`<div class="eyebrow">O relatório</div>
+ <div class="mid">Do rastreio à hipótese, <span class="it">sem planilha.</span></div>
+ <div class="check">
+  <div><span class="ok">✓</span>Pontuação e faixa de resultado</div>
+  <div><span class="ok">✓</span>Resultado por dimensão</div>
+  <div><span class="ok">✓</span>Hipótese a investigar</div>
+  <div><span class="ok">✓</span>Encaminhamento sugerido</div>
+  <div><span class="ok">✓</span>Carta de encaminhamento pronta</div>
+  <div><span class="ok">✓</span>Texto de psicoeducação</div>
+ </div>`,
+`<div class="mid">74 instrumentos em <span class="it">9 áreas clínicas</span></div>
+ <div class="grid">
+  <div class="cat"><span class="e">🌀</span><b>Ansiedade</b><span>8 instrumentos</span></div>
+  <div class="cat"><span class="e">🌧️</span><b>Humor</b><span>7 instrumentos</span></div>
+  <div class="cat"><span class="e">🤱</span><b>Saúde materna</b><span>9 instrumentos</span></div>
+  <div class="cat"><span class="e">🛡️</span><b>Trauma</b><span>9 instrumentos</span></div>
+  <div class="cat"><span class="e">🔥</span><b>Estresse e burnout</b><span>9 instrumentos</span></div>
+  <div class="cat"><span class="e">🧩</span><b>Neurodivergência</b><span>9 instrumentos</span></div>
+  <div class="cat"><span class="e">🌊</span><b>Personalidade</b><span>8 instrumentos</span></div>
+  <div class="cat"><span class="e">🌻</span><b>Relações</b><span>11 instrumentos</span></div>
+  <div class="cat"><span class="e">🍃</span><b>Outras condições</b><span>10 instrumentos</span></div>
+ </div>`,
+`<div class="eyebrow">Cuidado ético</div>
+ <div class="mid">Feito para apoiar o seu julgamento clínico.</div>
+ <div class="eth">
+  <div><h3>Não é diagnóstico</h3><p>Rastreio aponta hipóteses para investigar e encaminhar.</p></div>
+  <div><h3>Fontes claras</h3><p>Cada instrumento informa se é escala validada ou rastreio de triagem.</p></div>
+  <div><h3>Alertas de risco</h3><p>Respostas de risco geram alerta e mostram o CVV 188 ao paciente.</p></div>
+  <div><h3>LGPD</h3><p>As respostas não ficam em servidor: vão do paciente direto para você.</p></div>
+ </div>`,
+`<div class="cta">${LOGO(170)}
+  <div class="big" style="font-size:96px">Psique Rastreios</div>
+  <div class="pills"><span class="pill">74 instrumentos</span><span class="pill g">Relatório pronto</span></div>
+  <div class="price">R$ 39,90 <small>por mês</small></div>
+  <div class="btn">Link na bio</div>
+  <div class="fine">Cancele quando quiser · Exclusivo para profissionais com registro ativo<br>Ana Bárbara Serra Oliveira · CRP 20/13.134</div>
+ </div>`
+];
+const STORY = [
+`<div class="eyebrow">Enquete</div>
+ <div class="big">Você ainda corrige escalas <span class="it">no papel?</span></div>
+ <div class="space">espaço para a enquete do Instagram</div>
+ <div class="lead">Existe um jeito mais funcional de fazer isso.</div>`,
+`<div class="eyebrow">Envie · o paciente responde · relatório pronto</div>
+ <div class="mid">O relatório chega pronto para você.</div>
+ <div class="report">
+  <div class="eyebrow" style="font-size:22px">Rastreio de Ansiedade Generalizada · GAD-7</div>
+  <div class="s"><div><b class="n">12</b> <span style="font-size:28px;color:#6E7165">de 21 pontos</span></div><span class="lvl">Ansiedade moderada</span></div>
+  <div class="seg"><span style="flex:5;background:#7F9461"></span><span style="flex:5;background:#C3A257"></span><span style="flex:5;background:#C2875A"></span><span style="flex:7;background:#A85E57"></span></div>
+  <div class="row"><small>Hipótese a investigar</small>Ansiedade generalizada</div>
+  <div class="row"><small>Encaminhamento sugerido</small>Psiquiatria e psicoterapia (TCC)</div>
+ </div>
+ <div class="lead" style="font-size:30px">Dados ilustrativos.</div>`,
+`<div class="cta">${LOGO(190)}
+  <div class="big" style="font-size:104px">Psique Rastreios</div>
+  <div class="lead">74 instrumentos de rastreio para a sua prática clínica.</div>
+  <div class="price">R$ 39,90 <small>por mês</small></div>
+  <div class="space" style="width:100%">espaço para o link do Instagram</div>
+  <div class="fine">Ana Bárbara Serra Oliveira · CRP 20/13.134</div>
+ </div>`
+];
+const q = new URLSearchParams(location.search), kind = q.get('k') || 'feed', n = +(q.get('n') || 1);
+const html = (kind === 'feed' ? FEED : STORY)[n-1];
+document.getElementById('root').innerHTML = `<div class="card ${kind}">${BLOBS}${html}${kind === 'feed' ? FOOTB(n) : ''}</div>`;
+</script></body></html>
