@@ -119,6 +119,12 @@ button,input,textarea{font:inherit;color:inherit}
 .row:hover{background:var(--olive-soft)}
 .row .grow{flex:1;min-width:0}
 .row .t{font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rrow{display:flex;align-items:stretch;border-bottom:1px solid var(--line)}
+.rrow:last-child{border-bottom:0}
+.rrow .row{border-bottom:0;flex:1;min-width:0}
+.rdel{flex:none;width:48px;border:0;border-left:1px solid var(--line);background:none;color:var(--muted);cursor:pointer;display:grid;place-items:center}
+.rdel:hover{color:var(--t3);background:color-mix(in srgb,var(--t3) 8%,transparent)}
+.btn.danger{background:none;border-color:color-mix(in srgb,var(--t3) 45%,transparent);color:var(--t3)}
 .dot{width:10px;height:10px;border-radius:50%;flex:none}
 
 .banner{display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap;background:var(--gold-soft);border-radius:14px;padding:12px 14px;font-size:.88rem}
@@ -213,11 +219,11 @@ details summary{cursor:pointer;font-weight:600;color:var(--olive-deep)}
 <!-- ARTIFACT-BODY-START -->
 <div class="wrap" id="app" aria-live="polite"></div>
 <div class="toast" id="toast" hidden></div>
-<script src="js/vendor/supabase.min.js?v=2026.11.20-6"></script>
-<script src="js/config.js?v=2026.11.20-6"></script>
-<script src="js/escalas-validadas.js?v=2026.11.20-6"></script>
-<script src="js/escalas-psicoeducativas.js?v=2026.11.20-6"></script>
-<script src="js/app.js?v=2026.11.20-6"></script>
+<script src="js/vendor/supabase.min.js?v=2026.11.20-7"></script>
+<script src="js/config.js?v=2026.11.20-7"></script>
+<script src="js/escalas-validadas.js?v=2026.11.20-7"></script>
+<script src="js/escalas-psicoeducativas.js?v=2026.11.20-7"></script>
+<script src="js/app.js?v=2026.11.20-7"></script>
 <!-- ARTIFACT-BODY-END -->
 </body>
 </html>

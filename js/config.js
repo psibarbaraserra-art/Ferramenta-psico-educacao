@@ -11,5 +11,5 @@ window.PSIQUE_CONFIG = {
   telefone: '+55 (92) 98115-5631',           // WhatsApp de suporte
   foro: 'Manaus/AM',                          // foro dos Termos de Uso
   termosVersao: '2026-11-20',
-  versao: '2026.11.20-6'   // ao publicar mudanças, atualize aqui e nos ?v= do index.html e do vendas.html
+  versao: '2026.11.20-7'   // ao publicar mudanças, atualize aqui e nos ?v= do index.html e do vendas.html
 };
