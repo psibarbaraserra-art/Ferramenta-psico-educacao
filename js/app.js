@@ -97,6 +97,7 @@ const EXAMPLES = [
 ];
 const CFG = window.PSIQUE_CONFIG || {};
 const LIVE = !!(window.supabase && CFG.supabaseUrl && CFG.supabaseKey && location.protocol !== 'file:' && !/claude/.test(location.hostname));
+const RECOVERY = /type=recovery/.test(location.hash || '');
 const sb = LIVE ? window.supabase.createClient(CFG.supabaseUrl, CFG.supabaseKey) : null;
 let user = null, sub = null;
 const ativa = a => !!a && a.status !== 'reembolsada' && (!a.expira_em || new Date(a.expira_em) > new Date());
@@ -579,6 +580,7 @@ function openResult(r){
       const {data} = await sb.auth.getSession();
       user = data.session ? data.session.user : null;
       if (S.view === 'newPass') return;
+      if (RECOVERY && user) { try { history.replaceState(null, '', location.pathname); } catch(e){} await loadAccount(); go('newPass'); return; }
       if (user) { await loadAccount(); if (ativa(sub)) return afterLogin(); }
     } catch(e){}
     go(user ? 'noAccess' : 'login'); return;
