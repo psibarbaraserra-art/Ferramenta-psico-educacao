@@ -268,9 +268,9 @@ footer{border-top:1px solid var(--line);padding-block:32px 48px;font-size:.85rem
   </footer>
 </div>
 
-<script src="js/config.js"></script>
-<script src="js/escalas-validadas.js"></script>
-<script src="js/escalas-psicoeducativas.js"></script>
+<script src="js/config.js?v=2026.11.20-2"></script>
+<script src="js/escalas-validadas.js?v=2026.11.20-2"></script>
+<script src="js/escalas-psicoeducativas.js?v=2026.11.20-2"></script>
 <script>
 (function(){
   var cfg = window.PSIQUE_CONFIG || {};
@@ -288,9 +288,9 @@ footer{border-top:1px solid var(--line);padding-block:32px 48px;font-size:.85rem
     ['tra','Trauma','TEPT, TEPT complexo, experiências adversas na infância, violência e dissociação.'],
     ['bur','Estresse e burnout','Burnout ocupacional e parental, estresse crônico, fadiga por compaixão e equilíbrio.'],
     ['per','Personalidade','Traços borderline, narcisista, dependente, evitativo, antissocial e obsessivo.'],
-    ['neu','Neurodesenvolvimento','TDAH infantil, espectro autista, atenção, impulsividade e funções executivas.'],
+    ['neu','Neurodivergência','TDAH adulto e infantil, espectro autista, atenção, impulsividade e funções executivas.'],
     ['rel','Relacionamentos','Dependência emocional, ciúme, autoestima, limites, regulação emocional e codependência.'],
-    ['out','Outras condições','TOC, compulsão alimentar, insônia, luto, uso de substâncias e somatização.']
+    ['out','Outras condições','TOC, anorexia, bulimia e compulsão alimentar, insônia, luto, álcool, substâncias e somatização.']
   ];
   document.getElementById('cats').innerHTML = CATS.map(function(c){
     var n = ids.filter(function(i){ return S[i].cats.indexOf(c[0]) >= 0; }).length;

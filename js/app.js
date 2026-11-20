@@ -51,7 +51,7 @@ const CATS = [
   {id:'tra', name:'Traumas e experiências adversas', short:'Trauma', icon:'shield'},
   {id:'bur', name:'Estresse, esgotamento e burnout', short:'Estresse', icon:'flame'},
   {id:'per', name:'Transtornos de personalidade', short:'Personalidade', icon:'puzzle'},
-  {id:'neu', name:'Neurodesenvolvimento', short:'Neurodesenvolvimento', icon:'focus'},
+  {id:'neu', name:'Neurodivergência e neurodesenvolvimento', short:'Neurodivergência', icon:'focus'},
   {id:'rel', name:'Relacionamentos e funcionamento emocional', short:'Relacionamentos', icon:'heart'},
   {id:'out', name:'Outros transtornos e condições', short:'Outros', icon:'leaf'}
 ];
@@ -72,7 +72,7 @@ const EMOJI = {
   p_borderline:'🌊', p_narcisista:'👑', p_dependente:'🔗', p_evitativa:'🐚', p_antissocial:'🚧', p_obsessiva:'📐', p_instabilidade:'🌪️', p_abandono:'🚪',
   n_tea_adulto:'🧩', n_tea_infantil:'🪀', n_atencao:'🔍', n_impulsividade:'⚡', n_hiperatividade:'🏃', n_executivas:'🗂️', n_social:'💬',
   r_dependencia:'🪢', r_ciume:'👀', r_rejeicao:'🥺', r_autoestima:'🌻', r_inseguranca:'🫥', r_limites:'✋', r_regulacao:'🎚️', r_comunicacao:'🗣️', r_abusivo:'⚠️', r_codependencia:'🤝',
-  o_toc:'🔁', o_compulsao:'🍫', o_sono:'😴', o_luto:'🕊️', o_substancias:'💊'
+  o_toc:'🔁', n_tdah_adulto:'🎯', o_alcool:'🍷', o_alimentar:'🍽️', o_compulsao:'🍫', o_sono:'😴', o_luto:'🕊️', o_substancias:'💊'
 };
 const icoHTML = id => EMOJI[id] ? `<span class="emo" aria-hidden="true">${EMOJI[id]}</span>` : icon(catIcon(SCALES[id]));
 const REFER = {
@@ -89,7 +89,7 @@ const REFER = {
 const REFER_ID = {
   audit:'CAPS AD ou psiquiatria com experiência em dependência química', o_substancias:'CAPS AD ou psiquiatria com experiência em dependência química',
   scoff:'Equipe multiprofissional em transtornos alimentares (psiquiatria e nutrição)', o_compulsao:'Equipe multiprofissional em transtornos alimentares (psiquiatria e nutrição)',
-  o_sono:'Medicina do sono ou psiquiatria', phq15:'Clínica médica, para investigar causas físicas, e psiquiatria', a_saude:'Clínica médica de referência e psiquiatria',
+  o_sono:'Medicina do sono ou psiquiatria', n_tdah_adulto:'Psiquiatria e avaliação neuropsicológica', o_alcool:'CAPS AD ou psiquiatria com experiência em dependência química', o_alimentar:'Equipe multiprofissional em transtornos alimentares (psiquiatria, nutrição e clínica médica)', phq15:'Clínica médica, para investigar causas físicas, e psiquiatria', a_saude:'Clínica médica de referência e psiquiatria',
   snap:'Neuropediatria ou psiquiatria infantil, com avaliação neuropsicológica', n_tea_infantil:'Neuropediatria ou psiquiatria infantil, com equipe multiprofissional',
   n_tea_adulto:'Psiquiatria e avaliação neuropsicológica com experiência em TEA no adulto',
   t_violencia:'Rede de proteção (CRAM, CREAS ou Delegacia da Mulher) e psicoterapia especializada em trauma', r_abusivo:'Rede de proteção (CRAM ou CREAS) e psicoterapia',
@@ -213,7 +213,7 @@ function viewHome(){
     <div style="display:flex;justify-content:space-between;align-items:baseline;gap:12px"><h3>Resultados recentes</h3><button class="back" data-go="results">Ver todos</button></div>
     ${resultList(recent)}
   </section>
-  <p class="foot">Psique Rastreios · ferramenta de apoio ao trabalho clínico. Não realiza diagnóstico.</p>`;
+  <p class="foot">Psique Rastreios · ferramenta de apoio ao trabalho clínico. Não realiza diagnóstico.${CFG.versao ? '<br>Versão ' + esc(CFG.versao) : ''}</p>`;
 }
 
 function resultList(list){

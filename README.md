@@ -10,7 +10,7 @@ Aplicativo web independente para psicólogos(as) aplicarem rastreios, enviarem p
 
 Não há servidor nesta versão: os dados ficam no link e no aparelho de quem abre.
 
-## Biblioteca (71 instrumentos visíveis em 9 categorias)
+## Biblioteca (74 instrumentos visíveis em 9 categorias)
 
 AUDIT, EPDS, ASRS e SCOFF estão ocultas (`hidden:true` em `js/escalas-validadas.js`) até a confirmação da licença para uso comercial. Para reativar, basta remover essa linha.
 Ansiedade · Humor · Saúde materna e puerpério · Trauma · Estresse e burnout · Personalidade · Neurodesenvolvimento · Relacionamentos · Outros transtornos.
@@ -72,3 +72,6 @@ No celular, abra o endereço e use "Adicionar à tela inicial" para instalar com
 - Respostas chegando direto no painel, sem depender do WhatsApp (requer backend com LGPD)
 - Instalar como app no celular (PWA)
 - Novos rastreios: personalidade, sono, autoestima
+
+## Publicar uma atualização
+Ao mudar arquivos em `js/`, atualize o número de versão em três lugares: `versao` em `js/config.js` e os `?v=` dos scripts em `index.html` e `vendas.html`. Isso obriga os celulares, inclusive com o app instalado, a baixar os arquivos novos. A versão aparece no rodapé do app.
